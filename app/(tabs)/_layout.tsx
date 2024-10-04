@@ -1,34 +1,54 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const colorScheme = 'dark';
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors[colorScheme].tabIconSelected,
+        tabBarInactiveTintColor: Colors[colorScheme].tabIconDefault,
+        tabBarStyle: {
+          backgroundColor: '#333',
+          borderTopWidth: 0,
+          height: 70,
+          paddingVertical: 10,
+          paddingBottom: 15,
+        },
         headerShown: false,
+        tabBarLabelStyle: {
+          fontSize: 16,
+          fontWeight: 'bold',
+          padding: 0,
+        },
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'Filmes',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon iconType="MaterialIcons" name={focused ? 'movie' : 'movie'} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="groups"
         options={{
-          title: 'Explore',
+          title: 'Grupo',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon iconType="Ionicons" name={focused ? 'people-sharp' : 'people-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Perfil',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon iconType="FontAwesome5" name={focused ? 'user-alt' : 'user'} color={color} />
           ),
         }}
       />
