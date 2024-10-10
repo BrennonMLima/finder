@@ -48,7 +48,7 @@ export default function TabLayout() {
         options={{
           title: 'Perfil',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconType="FontAwesome5" name={focused ? 'user-alt' : 'user'} color={color} />
+            <TabBarIcon iconType="Ionicons" name={focused ? 'person-sharp' : 'person-outline'} color={color} />
           ),
         }}
       />
