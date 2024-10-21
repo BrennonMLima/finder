@@ -1,23 +1,21 @@
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  Content,
+  ProfileImage,
+  Nickname,
+  Links,
+  Container,
+} from "@/assets/styles/profile.styles";
+import React from "react";
 
-export default function TabTwoScreen() {
+export default function ProfileScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Perfil</Text>
-    </View>
-  )
+    <Container>
+      <Content>
+        <ProfileImage source={require("@/assets/images/profile.png")} />
+        <Nickname>Denilce Veloso</Nickname>
+        <Links>Seja Premium ⭐</Links>
+        <Links>Avaliar Filmes</Links>
+      </Content>
+    </Container>
+  );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#262626',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-});
