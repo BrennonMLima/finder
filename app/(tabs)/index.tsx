@@ -1,23 +1,34 @@
 import React from "react";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import { Container, Title } from "@/assets/styles/global.styles";
+import { Text } from "react-native";
 import {
   Banner,
   Description,
   IconContainer,
+  ImageRating,
+  RatingContainer,
 } from "../../assets/styles/index.styles";
 
 export default function HomeScreen() {
   return (
     <Container>
       <Title>Urso do Pó Branco</Title>
+      
+      <ImageRating>
 
       <Banner
         source={{
           uri: "https://m.media-amazon.com/images/M/MV5BODIyNjM0MTgtNjAyNS00MjIxLTg1NzUtM2UyNjQ4ZTEyOWQ1XkEyXkFqcGc@._V1_FMjpg_UY3000_.jpg",
         }}
-        resizeMode="cover"
-      />
+        resizeMode="contain"
+        />
+
+      <RatingContainer>
+        <FontAwesome name="imdb" size={24} color="white"/>
+      <Description>3.2</Description>
+      </RatingContainer>
+      </ImageRating>
 
       <Description>
         Um grupo excêntrico de policiais, criminosos, turistas e adolescentes
@@ -26,8 +37,8 @@ export default function HomeScreen() {
       </Description>
 
       <IconContainer>
-        <MaterialCommunityIcons name="popcorn" size={50} color="#0496ff" />
         <MaterialCommunityIcons name="thumb-down" size={50} color="#ff3333" />
+        <MaterialCommunityIcons name="popcorn" size={50} color="#0496ff" />
       </IconContainer>
     </Container>
   );
