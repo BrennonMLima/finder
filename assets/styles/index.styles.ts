@@ -11,7 +11,7 @@ export const Banner = styled.Image`
 `;
 
 export const ImageRating = styled.View`
-  width: 90%;
+  width: 100%;
   height: 70%;
   position: relative;
 `;
@@ -44,7 +44,7 @@ export const DescriptionWrapper = styled.View`
   padding: 10px;
   border-bottom-right-radius: 20px;
   border-bottom-left-radius: 20px;
-  width: 90%;
+  width: 100%;
 `;
 
 export const Description = styled.Text`
