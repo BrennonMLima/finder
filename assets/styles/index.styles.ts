@@ -20,7 +20,7 @@ export const TitleContainer = styled.View`
   position: absolute;
   bottom: 0;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: #333;
   padding: 10px;
   align-items: center;
   flex-direction: row;
@@ -45,6 +45,9 @@ export const DescriptionWrapper = styled.View`
   border-bottom-right-radius: 20px;
   border-bottom-left-radius: 20px;
   width: 100%;
+  border-top-width: 1px;
+  border-top-color: #888;
+  border-top-style: solid;
 `;
 
 export const Description = styled.Text`

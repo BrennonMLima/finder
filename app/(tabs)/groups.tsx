@@ -1,26 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Modal, ScrollView } from "react-native";
+import { getAllGroups, getUsersInGroup } from "@/services/groups";
 import {
-  Modal,
-  TextInput,
-  Button,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import {
-  ButtonLabel,
   Container,
   StyledButton,
+  ButtonLabel,
   Title,
 } from "@/assets/styles/global.styles";
 import {
-  HeaderText,
+  Header,
   NewGroupButton,
   ButtonText,
   GroupContainer,
   GroupTitle,
   GroupDetails,
-  Header,
+  HeaderText,
 } from "@/assets/styles/groups.styles";
 import {
   Overlay,
@@ -28,13 +22,51 @@ import {
   StyledInput,
 } from "@/assets/styles/moda.styles";
 
+interface Group {
+  id: string;
+  name: string;
+  description: string;
+  genre: string;
+  userCount: number;
+}
+
 export default function GroupScreen() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [groups, setGroups] = useState<Group[]>([]);
   const [groupName, setGroupName] = useState("");
-  const [groupDescription, setgroupDescription] = useState("");
+  const [groupDescription, setGroupDescription] = useState("");
+
+  useEffect(() => {
+    const fetchGroupsAndUsers = async () => {
+      try {
+        const response = await getAllGroups();
+        if (response.data.groups) {
+          const groupsWithUserCount = await Promise.all(
+            response.data.groups.map(async (group: Group) => {
+              try {
+                const usersResponse = await getUsersInGroup(group.id);
+                return { ...group, userCount: usersResponse.data.length };
+              } catch (error) {
+                console.error(
+                  `Erro ao buscar usuários do grupo ${group.id}`,
+                  error
+                );
+                return { ...group, userCount: 0 };
+              }
+            })
+          );
+          setGroups(groupsWithUserCount);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar grupos:", error);
+      }
+    };
+
+    fetchGroupsAndUsers();
+  }, []);
 
   const handleCreateGroup = () => {
-    console.log(`Nome: ${groupName}, Data: ${groupDescription}`);
+    console.log(`Nome: ${groupName}, Descrição: ${groupDescription}`);
     setModalVisible(false);
   };
 
@@ -46,25 +78,24 @@ export default function GroupScreen() {
         <NewGroupButton onPress={() => setModalVisible(true)}>
           <ButtonText>+ Novo Grupo</ButtonText>
         </NewGroupButton>
-        <HeaderText>Seus grupos</HeaderText>
+        <HeaderText>Seus Grupos</HeaderText>
       </Header>
 
       <ScrollView
         contentContainerStyle={{ alignItems: "center" }}
         style={{ width: "100%" }}
       >
-        <GroupContainer>
-          <GroupTitle>Amigos e o Eduardo</GroupTitle>
-          <GroupDetails>5 participantes - 20/10/2024</GroupDetails>
-        </GroupContainer>
-        <GroupContainer>
-          <GroupTitle>Nome do Grupo</GroupTitle>
-          <GroupDetails>12 participantes - 25/12/2024</GroupDetails>
-        </GroupContainer>
+        {groups.map((group) => (
+          <GroupContainer key={group.id}>
+            <GroupTitle>{group.name}</GroupTitle>
+            <GroupDetails>
+              {group.userCount} participantes - Próx. evento: xx/xx/xx
+            </GroupDetails>
+          </GroupContainer>
+        ))}
       </ScrollView>
 
-      {/* MODAL */}
-
+      {/* Modal para criar novo grupo */}
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -82,13 +113,7 @@ export default function GroupScreen() {
             <StyledInput
               placeholder="Descrição"
               value={groupDescription}
-              autoCapitalize="none"
-              onChangeText={setgroupDescription}
-            />
-            <StyledInput
-              placeholder="Genêros"
-              value={groupDescription}
-              onChangeText={setgroupDescription}
+              onChangeText={setGroupDescription}
             />
             <StyledButton onPress={handleCreateGroup}>
               <ButtonLabel>Criar</ButtonLabel>

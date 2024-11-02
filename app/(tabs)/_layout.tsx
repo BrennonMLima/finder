@@ -1,10 +1,10 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
+import { Tabs } from "expo-router";
+import React from "react";
+import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import { Colors } from "@/constants/Colors";
 
 export default function TabLayout() {
-  const colorScheme = 'dark';
+  const colorScheme = "dark";
 
   return (
     <Tabs
@@ -12,7 +12,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme].tabIconSelected,
         tabBarInactiveTintColor: Colors[colorScheme].tabIconDefault,
         tabBarStyle: {
-          backgroundColor: '#333',
+          backgroundColor: "#333",
           borderTopWidth: 0,
           height: 70,
           paddingVertical: 10,
@@ -21,34 +21,47 @@ export default function TabLayout() {
         headerShown: false,
         tabBarLabelStyle: {
           fontSize: 16,
-          fontWeight: 'bold',
+          fontWeight: "bold",
           padding: 0,
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Filmes',
+          title: "Filmes",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconType="MaterialIcons" name={focused ? 'movie' : 'movie'} color={color} />
+            <TabBarIcon
+              iconType="MaterialIcons"
+              name={focused ? "movie" : "movie"}
+              color={color}
+            />
           ),
         }}
       />
       <Tabs.Screen
         name="groups"
         options={{
-          title: 'Grupo',
+          title: "Grupo",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconType="Ionicons" name={focused ? 'people-sharp' : 'people-outline'} color={color} />
+            <TabBarIcon
+              iconType="Ionicons"
+              name={focused ? "people-sharp" : "people-outline"}
+              color={color}
+            />
           ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Perfil',
+          title: "Perfil",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon iconType="Ionicons" name={focused ? 'person-sharp' : 'person-outline'} color={color} />
+            <TabBarIcon
+              iconType="Ionicons"
+              name={focused ? "person-sharp" : "person-outline"}
+              color={color}
+            />
           ),
         }}
       />

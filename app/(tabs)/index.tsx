@@ -20,7 +20,7 @@ export default function HomeScreen() {
           source={{
             uri: "https://m.media-amazon.com/images/M/MV5BODIyNjM0MTgtNjAyNS00MjIxLTg1NzUtM2UyNjQ4ZTEyOWQ1XkEyXkFqcGc@._V1_FMjpg_UY3000_.jpg",
           }}
-          resizeMode="cover"
+          resizeMode="stretch"
         />
 
         <TitleContainer>
