@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   button: {
-    backgroundColor: "#0496ff",
+    backgroundColor: "#007bff",
     padding: 15,
     borderRadius: 10,
     width: "100%",
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   link: {
-    color: "#0496ff",
+    color: "#007bff",
     marginTop: 20,
     textDecorationLine: "underline",
   },

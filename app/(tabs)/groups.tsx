@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Modal, ScrollView } from "react-native";
+import { ScrollView, Alert } from "react-native";
 import { Link } from "expo-router";
 import { getAllGroups, getUsersInGroup } from "@/services/groups";
-import {
-  Container,
-  StyledButton,
-  ButtonLabel,
-  Title,
-} from "@/assets/styles/global.styles";
+import { Container } from "@/assets/styles/global.styles";
 import {
   Header,
   NewGroupButton,
@@ -17,11 +12,7 @@ import {
   GroupDetails,
   HeaderText,
 } from "@/assets/styles/groups.styles";
-import {
-  Overlay,
-  ModalWrapper,
-  StyledInput,
-} from "@/assets/styles/moda.styles";
+import CreateGroupModal from "../createGroupModal";
 
 interface Group {
   id: string;
@@ -34,8 +25,6 @@ interface Group {
 export default function GroupScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
-  const [groupName, setGroupName] = useState("");
-  const [groupDescription, setGroupDescription] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -50,7 +39,7 @@ export default function GroupScreen() {
                 return { ...group, userCount: usersResponse.data.length };
               } catch (error) {
                 console.error(
-                  `Erro ao buscar usuários do grupo ${group.id}`,
+                  `Erro ao buscar usuarios do grupo ${group.id}`,
                   error
                 );
                 return { ...group, userCount: 0 };
@@ -60,19 +49,12 @@ export default function GroupScreen() {
           setGroups(groupsWithUserCount);
         }
       } catch (error) {
-        setError("Você ainda não esta em um grupo")
+        setError("Voce ainda nao esta em um grupo");
       }
     };
 
     fetchGroupsAndUsers();
   }, []);
-
-  const handleCreateGroup = () => {
-    console.log(`Nome: ${groupName}, Descrição: ${groupDescription}`);
-    setModalVisible(false);
-  };
-
-  const closeModal = () => setModalVisible(false);
 
   return (
     <Container>
@@ -88,46 +70,21 @@ export default function GroupScreen() {
         style={{ width: "100%" }}
       >
         {groups.map((group) => (
-          <Link key={group.id} href={`/groupdetail/${group.id}`} >
-          <GroupContainer key={group.id}>
-            <GroupTitle>{group.name}</GroupTitle>
-            <GroupDetails>
-              {group.userCount} participantes - Próx. evento: xx/xx/xx
-            </GroupDetails>
-          </GroupContainer>
+          <Link key={group.id} href={`/groupdetail/${group.id}`}>
+            <GroupContainer>
+              <GroupTitle>{group.name}</GroupTitle>
+              <GroupDetails>
+                {group.userCount} participantes - Prox. evento: xx/xx/xx
+              </GroupDetails>
+            </GroupContainer>
           </Link>
         ))}
       </ScrollView>
 
-      {/* Modal para criar novo grupo */}
-      <Modal
+      <CreateGroupModal
         visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={closeModal}
-      >
-        <Overlay onPress={closeModal}>
-          <ModalWrapper onPress={() => {}}>
-            <Title>Criar Novo Grupo</Title>
-            <StyledInput
-              placeholder="Nome"
-              value={groupName}
-              onChangeText={setGroupName}
-            />
-            <StyledInput
-              placeholder="Descrição"
-              value={groupDescription}
-              onChangeText={setGroupDescription}
-            />
-            <StyledButton onPress={handleCreateGroup}>
-              <ButtonLabel>Criar</ButtonLabel>
-            </StyledButton>
-            <StyledButton onPress={closeModal} secondColor>
-              <ButtonLabel secondColor>Cancelar</ButtonLabel>
-            </StyledButton>
-          </ModalWrapper>
-        </Overlay>
-      </Modal>
+        onClose={() => setModalVisible(false)}
+      />
     </Container>
   );
 }

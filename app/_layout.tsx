@@ -18,20 +18,24 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
+      setIsMounted(true);
     }
   }, [loaded]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      router.replace("/(tabs)");
-    } else {
-      router.replace("/login");
+    if (isMounted) {
+      if (isAuthenticated) {
+        router.replace("/(tabs)");
+      } else {
+        router.replace("/login");
+      }
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isMounted]);
 
   if (!loaded) {
     return null;
@@ -42,7 +46,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="groupdetail/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="groupdetail/[id]" options={{ headerShown: true }} />
       </Stack>
     </ThemeProvider>
   );

@@ -23,7 +23,7 @@ export const Title = styled.Text`
 export const StyledButton = styled.TouchableOpacity<StyledButtonProps>`
   width: 100%;
   height: 50px;
-  background-color: ${(props) => (props.secondColor ? "#555" : "#0496ff")};
+  background-color: ${(props) => (props.secondColor ? "#555" : "#007bff")};
   border-radius: 10px;
   align-items: center;
   justify-content: center;

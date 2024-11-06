@@ -1,44 +1,84 @@
-// src/assets/styles/groupdetail.styles.ts
 import styled from "styled-components/native";
+import { RFValue } from "react-native-responsive-fontsize";
 
-export const Container = styled.View`
-  flex: 1;
-  padding: 20px;
-  background-color: #f5f5f5;
+const EventDate = styled.View`
+  flex-direction: row;
+  gap: 10px;
 `;
 
-export const Header = styled.View`
+const LocalEvent = styled.View`
+  flex-direction: row;
+  gap: 10px;
+  margin-top: 20px;
+`;
+
+const EventHeader = styled.View`
   align-items: center;
-  margin-bottom: 20px;
+  text-align: center;
+  gap: 10px;
 `;
 
-export const GroupInfo = styled.View`
+const EventInfo = styled.View`
   background-color: #37393b;
-  padding: 15px;
-  border-radius: 15px;
-  margin-bottom: 20px;
+  border: 2px solid #007bff;
+  margin: 15px 0;
+  padding: 5px 20px;
+  border-radius: 20px;
 `;
 
-export const EventInfo = styled.View`
-  margin-top: 10px;
-`;
-
-export const EventDate = styled.Text`
-  font-size: 16px;
-  color: #fff;
-  margin-bottom: 10px;
-`;
-
-export const LocalEvent = styled.Text`
-  font-size: 16px;
-  color: #fff;
-`;
-
-export const Members = styled.View`
-  margin-top: 30px;
-`;
-
-export const RankingButton = styled.View`
+const RankingBtn = styled.View`
   align-items: center;
+  justify-content: center;
   margin-top: 15px;
 `;
+
+const Members = styled.View`
+  margin-top: 55px;
+`;
+
+const Footer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+`;
+
+const StyledButton = styled.TouchableOpacity`
+  background-color: #007bff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  align-items: end;
+`;
+
+const NewEventButton = styled.TouchableOpacity`
+  background-color: #007bff;
+  padding: 10px 5px;
+  border-radius: 8px;
+  display: flex;
+  align-self: flex-end;
+  width: 50%;
+`;
+
+const ButtonText = styled.Text`
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+`;
+const Texto = styled.Text`
+  font-size: ${RFValue(16)}px;
+  color: #ddd;
+`;
+
+export {
+  EventDate,
+  LocalEvent,
+  EventHeader,
+  EventInfo,
+  RankingBtn,
+  Members,
+  Footer,
+  StyledButton,
+  NewEventButton,
+  ButtonText,
+  Texto,
+};

@@ -16,7 +16,7 @@ export const HeaderText = styled.Text`
 `;
 
 export const NewGroupButton = styled.TouchableOpacity`
-  background-color: #0496ff;
+  background-color: #007bff;
   padding: 10px 5px;
   border-radius: 8px;
   display: flex;

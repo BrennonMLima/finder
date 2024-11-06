@@ -17,10 +17,19 @@ export const getGroupById = async (groupId: string) => {
 export const createGroup = async (
   name: string,
   description: string,
-  genre: string,
-  userEmails: string[]
+  genre: string
 ) => {
-  return await api.post("/group", { name, description, genre, userEmails });
+  try {
+    const response = await api.post("/group", {
+      name,
+      description,
+      genre,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao criar grupo:", error);
+    throw error;
+  }
 };
 
 export const deleteGroup = async (groupId: string) => {

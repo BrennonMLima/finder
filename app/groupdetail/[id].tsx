@@ -1,84 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View, TouchableOpacity, Alert } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import styled from "styled-components/native";
 import { getGroupById, getUsersInGroup, deleteGroup } from "@/services/groups";
 import { FontAwesome } from "@expo/vector-icons";
-import { RFValue } from "react-native-responsive-fontsize";
-
-const EventDate = styled.View`
-  flex-direction: row;
-  gap: 10px;
-`;
-
-const LocalEvent = styled.View`
-  flex-direction: row;
-  gap: 10px;
-  margin-top: 20px;
-`;
-
-const EventHeader = styled.View`
-  align-items: center;
-  text-align: center;
-  gap: 10px;
-`;
-
-const EventInfo = styled.View`
-  background-color: #37393b;
-  border: 2px solid #007bff;
-  margin: 15px 0;
-  padding: 5px 20px;
-  border-radius: 20px;
-`;
-
-const RankingBtn = styled.View`
-  align-items: center;
-  justify-content: center;
-  margin-top: 15px;
-`;
-
-const Members = styled.View`
-  margin-top: 55px;
-`;
-
-const Footer = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-end;
-`;
-
-const StyledButton = styled.TouchableOpacity`
-  background-color: #007bff;
-  padding: 10px 20px;
-  border-radius: 10px;
-  align-items: end;
-`;
-
-export const NewEventButton = styled.TouchableOpacity`
-  background-color: #0496ff;
-  padding: 10px 5px;
-  border-radius: 8px;
-  display: flex;
-  align-self: flex-end;
-  width: 50%;
-`;
-
-const ButtonText = styled.Text`
-  color: #fff;
-  font-size: 16px;
-  font-weight: bold;
-  text-align: center;
-`;
-
-export const Texto = styled.Text`
-  font-size: ${RFValue(16)}px;
-  color: #ddd;
-`;
+import {
+  ButtonText,
+  EventDate,
+  EventHeader,
+  EventInfo,
+  Footer,
+  LocalEvent,
+  Members,
+  NewEventButton,
+  RankingBtn,
+  StyledButton,
+  Texto,
+} from "@/assets/styles/groupdetail.styles";
 
 export default function GroupDetailScreen() {
   const { id } = useLocalSearchParams();
-  const [groupName, setGroupName] = useState<string>('');
-  const [groupDescription, setGroupDescription] = useState<string>('');
+  const [groupName, setGroupName] = useState<string>("");
+  const [groupDescription, setGroupDescription] = useState<string>("");
   const [members, setMembers] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -123,10 +65,15 @@ export default function GroupDetailScreen() {
   }
 
   return (
-
-    <ScrollView contentContainerStyle={{ padding: 20,backgroundColor: "#262626", flex: 1 }}>
+    <ScrollView
+      contentContainerStyle={{
+        padding: 20,
+        backgroundColor: "#262626",
+        flex: 1,
+      }}
+    >
       <EventHeader>
-        <Texto style={{ fontSize: 24, fontWeight: 'bold' }}>{groupName}</Texto>
+        <Texto style={{ fontSize: 24, fontWeight: "bold" }}>{groupName}</Texto>
         <Texto>{groupDescription}</Texto>
       </EventHeader>
 

@@ -42,7 +42,7 @@ export default function HomeScreen() {
 
       {/* <IconContainer>
         <MaterialCommunityIcons name="thumb-down" size={50} color="#ff3333" />
-        <MaterialCommunityIcons name="popcorn" size={50} color="#0496ff" />
+        <MaterialCommunityIcons name="popcorn" size={50} color="#007bff" />
       </IconContainer> */}
     </Container>
   );
