@@ -10,7 +10,7 @@ const getToken = async () => {
     const token = await AsyncStorage.getItem("auth-token");
     return token
       ? `Bearer ${token}`
-      : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQnJlbm5vbiIsImVtYWlsIjoiYnJlbm5vbkBnbWFpbC5jb20iLCJjcmVhdGVkQXQiOiIyMDI0LTEwLTI2VDAwOjMxOjE2Ljg3MVoiLCJpZCI6IjM4MTQ2MzY2LTQzOTgtNDcxNS1iOTViLTE1MjkxMTU2NjM5YSIsImlhdCI6MTczMDQyMTY0NSwiZXhwIjoxNzMwNDMyNDQ1fQ.73UYqa9TeMd-iSJAjg_9voOvkcPv83woEroiZCAfvGE";
+      : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUnVhbiIsImVtYWlsIjoicnVhbkBnbWFpbC5jb20iLCJjcmVhdGVkQXQiOiIyMDI0LTA2LTE5VDExOjU0OjQ1LjEwN1oiLCJpZCI6ImIxZmUxZTY4LTc3Y2EtNDIwZS1iYzZkLTZlY2NlMjcyNTQ3OCIsImlhdCI6MTczMDg0NjI5MiwiZXhwIjoxNzMwODU3MDkyfQ.2XAxsSdMKDMstSW8fQNaL_q12toqE1EoTfLbQ3q_QlE";
   } catch (error) {
     console.error("Error retrieving token:", error);
     return "";

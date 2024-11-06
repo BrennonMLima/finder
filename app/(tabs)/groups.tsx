@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, ScrollView } from "react-native";
+import { Link } from "expo-router";
 import { getAllGroups, getUsersInGroup } from "@/services/groups";
 import {
   Container,
@@ -35,6 +36,7 @@ export default function GroupScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchGroupsAndUsers = async () => {
@@ -58,7 +60,7 @@ export default function GroupScreen() {
           setGroups(groupsWithUserCount);
         }
       } catch (error) {
-        console.error("Erro ao buscar grupos:", error);
+        setError("Você ainda não esta em um grupo")
       }
     };
 
@@ -86,12 +88,14 @@ export default function GroupScreen() {
         style={{ width: "100%" }}
       >
         {groups.map((group) => (
+          <Link key={group.id} href={`/groupdetail/${group.id}`} >
           <GroupContainer key={group.id}>
             <GroupTitle>{group.name}</GroupTitle>
             <GroupDetails>
               {group.userCount} participantes - Próx. evento: xx/xx/xx
             </GroupDetails>
           </GroupContainer>
+          </Link>
         ))}
       </ScrollView>
 
