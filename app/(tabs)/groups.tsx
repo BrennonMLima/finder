@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Alert } from "react-native";
+import { ScrollView } from "react-native";
 import { Link } from "expo-router";
 import { getAllGroups, getUsersInGroup } from "@/services/groups";
 import { Container } from "@/assets/styles/global.styles";
@@ -27,32 +27,28 @@ export default function GroupScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchGroupsAndUsers = async () => {
-      try {
-        const response = await getAllGroups();
-        if (response.data.groups) {
-          const groupsWithUserCount = await Promise.all(
-            response.data.groups.map(async (group: Group) => {
-              try {
-                const usersResponse = await getUsersInGroup(group.id);
-                return { ...group, userCount: usersResponse.data.length };
-              } catch (error) {
-                console.error(
-                  `Erro ao buscar usuarios do grupo ${group.id}`,
-                  error
-                );
-                return { ...group, userCount: 0 };
-              }
-            })
-          );
-          setGroups(groupsWithUserCount);
-        }
-      } catch (error) {
-        setError("Voce ainda nao esta em um grupo");
+  const fetchGroupsAndUsers = async () => {
+    try {
+      const response = await getAllGroups();
+      if (response.data.groups) {
+        const groupsWithUserCount = await Promise.all(
+          response.data.groups.map(async (group: Group) => {
+            try {
+              const usersResponse = await getUsersInGroup(group.id);
+              return { ...group, userCount: usersResponse.data.length };
+            } catch (error) {
+              return { ...group, userCount: 0 };
+            }
+          })
+        );
+        setGroups(groupsWithUserCount);
       }
-    };
+    } catch (error) {
+      setError("Voce ainda nao esta em um grupo");
+    }
+  };
 
+  useEffect(() => {
     fetchGroupsAndUsers();
   }, []);
 
@@ -84,6 +80,7 @@ export default function GroupScreen() {
       <CreateGroupModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+        onGroupCreated={fetchGroupsAndUsers}
       />
     </Container>
   );

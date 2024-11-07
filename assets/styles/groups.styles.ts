@@ -34,7 +34,6 @@ export const ButtonText = styled.Text`
 export const GroupContainer = styled.View`
   background-color: #333;
   padding: 20px 15px;
-  width: 90%;
   border-radius: 10px;
   margin-bottom: 15px;
 `;

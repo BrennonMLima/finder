@@ -4,7 +4,7 @@ import {
   Overlay,
   ModalWrapper,
   StyledInput,
-} from "@/assets/styles/moda.styles";
+} from "@/assets/styles/modal.styles";
 import {
   Title,
   StyledButton,
@@ -15,11 +15,13 @@ import { createGroup } from "@/services/groups";
 interface CreateGroupModalProps {
   visible: boolean;
   onClose: () => void;
+  onGroupCreated: () => void;
 }
 
 const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
   visible,
   onClose,
+  onGroupCreated,
 }) => {
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
@@ -35,6 +37,7 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
       await createGroup(groupName, groupDescription, groupGenre);
       onClose();
       Alert.alert("Sucesso", "Grupo criado com sucesso!");
+      onGroupCreated();
       setGroupName("");
       setGroupDescription("");
       setGroupGenre("");

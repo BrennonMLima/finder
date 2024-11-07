@@ -16,6 +16,8 @@ import {
   StyledButton,
   Texto,
 } from "@/assets/styles/groupdetail.styles";
+import CreateEventModal from "../createEventModal";
+import { createEvent } from "@/services/events";
 
 export default function GroupDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -23,6 +25,7 @@ export default function GroupDetailScreen() {
   const [groupDescription, setGroupDescription] = useState<string>("");
   const [members, setMembers] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchGroupDetails = async () => {
@@ -38,7 +41,7 @@ export default function GroupDetailScreen() {
           setError("Erro ao carregar os detalhes do grupo.");
         }
       } else {
-        setError("ID do grupo nÃ£o fornecido.");
+        setError("ID do grupo não fornecido.");
       }
     };
 
@@ -52,6 +55,22 @@ export default function GroupDetailScreen() {
         Alert.alert("Grupo deletado", "O grupo foi deletado com sucesso.");
       } catch (error) {
         setError("Erro ao deletar o grupo.");
+      }
+    }
+  };
+
+  const handleCreateEvent = async (
+    name: string,
+    location: string,
+    date: string,
+    description: string
+  ) => {
+    if (id) {
+      try {
+        await createEvent(name, location, date, description, id as string);
+        Alert.alert("Evento Criado", "O evento foi criado com sucesso.");
+      } catch (error) {
+        setError("Erro ao criar evento.");
       }
     }
   };
@@ -78,14 +97,14 @@ export default function GroupDetailScreen() {
       </EventHeader>
 
       <RankingBtn>
-        <NewEventButton>
+        <NewEventButton onPress={() => setModalVisible(true)}>
           <ButtonText>+ Novo Evento</ButtonText>
         </NewEventButton>
       </RankingBtn>
 
       <EventInfo>
         <EventDate>
-          <Texto>PrÃ³ximo evento:</Texto>
+          <Texto>Próximo evento:</Texto>
           <Texto>xx/xx/xx</Texto>
           <Texto>19:30</Texto>
         </EventDate>
@@ -113,6 +132,12 @@ export default function GroupDetailScreen() {
           <FontAwesome name="trash" size={24} color="red" />
         </TouchableOpacity>
       </Footer>
+
+      <CreateEventModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onCreate={handleCreateEvent}
+      />
     </ScrollView>
   );
 }
