@@ -1,5 +1,13 @@
 import api from "./api";
 
+export interface Event {
+  id: string;
+  name: string;
+  description: string;
+  date: string;
+  location: string;
+}
+
 export const getEventById = async (eventId: string): Promise<Event> => {
   try {
     const response = await api.get(`/event/${eventId}`);
@@ -54,15 +62,18 @@ export const deleteEvent = async (eventId: string): Promise<void> => {
   }
 };
 
-export const getEventsByGroup = async (groupId: string): Promise<Event[]> => {
+export const getEventsByGroup = async (groupId: string) => {
   try {
     const response = await api.get(`event/group/${groupId}`);
-    return response.data.events;
-  } catch (error) {
-    console.error(
-      `Erro ao consultar eventos do grupo com ID ${groupId}:`,
-      error
+    
+    const sortedEvents = response.data.sort(
+      (a: { date: string }, b: { date: string }) => 
+        new Date(b.date).getTime() - new Date(a.date).getTime()
     );
+
+    return sortedEvents[0] || null;
+  } catch (error) {
+    console.error(`Erro ao consultar eventos do grupo com ID ${groupId}:`, error);
     throw new Error(`Erro ao consultar eventos do grupo com ID ${groupId}`);
   }
 };

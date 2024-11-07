@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View, TouchableOpacity, Alert } from "react-native";
+import { ScrollView, View, TouchableOpacity, Alert } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { getGroupById, getUsersInGroup, deleteGroup } from "@/services/groups";
 import { FontAwesome } from "@expo/vector-icons";
@@ -17,13 +17,15 @@ import {
   Texto,
 } from "@/assets/styles/groupdetail.styles";
 import CreateEventModal from "../createEventModal";
-import { createEvent } from "@/services/events";
+import { createEvent, getEventsByGroup } from "@/services/events";
+import { Event } from "@/services/events";
 
 export default function GroupDetailScreen() {
   const { id } = useLocalSearchParams();
   const [groupName, setGroupName] = useState<string>("");
   const [groupDescription, setGroupDescription] = useState<string>("");
   const [members, setMembers] = useState<string[]>([]);
+  const [event, setEvent] = useState<Event | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
@@ -37,11 +39,17 @@ export default function GroupDetailScreen() {
 
           const membersResponse = await getUsersInGroup(id as string);
           setMembers(membersResponse.data);
+          
+          const recentEvent = await getEventsByGroup(group.id);
+          console.log("recente",recentEvent)
+          if (recentEvent) {
+            setEvent(recentEvent);
+          }
         } catch (error) {
           setError("Erro ao carregar os detalhes do grupo.");
         }
       } else {
-        setError("ID do grupo n�o fornecido.");
+        setError("ID do grupo não fornecido.");
       }
     };
 
@@ -103,14 +111,16 @@ export default function GroupDetailScreen() {
       </RankingBtn>
 
       <EventInfo>
-        <EventDate>
-          <Texto>Pr�ximo evento:</Texto>
-          <Texto>xx/xx/xx</Texto>
-          <Texto>19:30</Texto>
-        </EventDate>
-        <LocalEvent>
-          <Texto style={{ fontSize: 18 }}>Local: Fatec Sorocaba</Texto>
-        </LocalEvent>
+        {event ? (
+          <View>
+            <Texto>Nome: {event.name}</Texto>
+            <Texto>Descrição: {event.description}</Texto>
+            <Texto>Data: {new Date(event.date).toLocaleDateString()}</Texto>
+            <Texto>Local: {event.location}</Texto>
+          </View>
+        ) : (
+          <Texto>Nenhum evento disponível</Texto>
+        )}
       </EventInfo>
 
       <RankingBtn>
@@ -128,7 +138,7 @@ export default function GroupDetailScreen() {
           ))}
         </Members>
 
-        <TouchableOpacity onPress={handleDeleteGroup}>
+        <TouchableOpacity onPress={handleDeleteGroup}>  
           <FontAwesome name="trash" size={24} color="red" />
         </TouchableOpacity>
       </Footer>
