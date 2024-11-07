@@ -9,28 +9,48 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, Link } from "expo-router";
+import { login } from "../services/users";
 
 interface LoginProps {
   onLogin: (username: string, password: string) => void;
 }
 
 const LoginScreen: React.FC<LoginProps> = ({ onLogin }) => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleUsernameChange = (text: string) => setUsername(text);
-  const handlePasswordChange = (text: string) => setPassword(text);
+  // const handleUsernameChange = (text: string) => setUsername(text);
+  // const handlePasswordChange = (text: string) => setPassword(text);
 
-  const handleLogin = () => {
-    router.replace("/(tabs)");
+  const validateForm = () => {
+    if (!email || !password) {
+      setError("Todos os campos são obrigatórios.");
+      return false;
+    }
+
+    setError("");
+    return true;
+  };
+  const handleLogin = async () => {
+    if (!validateForm()) return;
+
+    try {
+      const response = await login(email, password);
+      if (response.status === 200) {
+        router.replace("/(tabs)");
+      } else {
+        setError("Não foi possível efetuar o login");
+      }
+    } catch (error) {
+      setError("Ocorreu um erro ao logar");
+      console.log(error);
+    }
   };
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
+    <KeyboardAvoidingView style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <Text style={styles.subtitle}>Olá, bem-vindo(a) de volta!</Text>
 
@@ -38,23 +58,27 @@ const LoginScreen: React.FC<LoginProps> = ({ onLogin }) => {
         <TextInput
           style={styles.input}
           placeholder="E-mail"
-          value={username}
-          onChangeText={handleUsernameChange}
+          value={email}
+          onChangeText={setEmail}
         />
         <TextInput
           style={styles.input}
           placeholder="Senha"
           secureTextEntry
           value={password}
-          onChangeText={handlePasswordChange}
+          onChangeText={setPassword}
         />
+
+        {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
 
         <TouchableOpacity>
-          <Text style={styles.link}>Não tem uma conta? Cadastre-se!</Text>
+          <Link href={"./signup"}>
+            <Text style={styles.link}>Não tem uma conta? Cadastre-se!</Text>
+          </Link>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
