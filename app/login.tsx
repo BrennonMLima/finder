@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import { useRouter, Link } from "expo-router";
 import { login } from "../services/users";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getToken } from "@/services/api";
 
 interface LoginProps {
   onLogin: (username: string, password: string) => void;
@@ -25,12 +27,22 @@ const LoginScreen: React.FC<LoginProps> = ({ onLogin }) => {
   // const handleUsernameChange = (text: string) => setUsername(text);
   // const handlePasswordChange = (text: string) => setPassword(text);
 
+  useEffect(() =>{
+    const checkToken = async () => {
+      const token = await getToken();
+      if(token){
+        router.replace("/(tabs)")
+      }
+    };
+
+    checkToken();
+  }, []);
+
   const validateForm = () => {
     if (!email || !password) {
       setError("Todos os campos são obrigatórios.");
       return false;
     }
-
     setError("");
     return true;
   };
@@ -40,6 +52,8 @@ const LoginScreen: React.FC<LoginProps> = ({ onLogin }) => {
     try {
       const response = await login(email, password);
       if (response.status === 200) {
+        const { token } = response.data;
+        await AsyncStorage.setItem("auth-token", token);
         router.replace("/(tabs)");
       } else {
         setError("Não foi possível efetuar o login");

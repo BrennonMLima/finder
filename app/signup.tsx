@@ -45,7 +45,7 @@ const RegisterScreen: React.FC<RegisterProps> = ({ onRegister }) => {
       const response = await createUser(email, username, password);
       if (response.status === 201) {
         Alert.alert("Sucesso", "Usuário criado com sucesso!");
-        router.replace("/(tabs)");
+        router.replace("/login");
       } else {
         setError("Não foi possível criar o usuário.");
       }
