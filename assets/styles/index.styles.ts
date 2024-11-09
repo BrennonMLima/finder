@@ -2,6 +2,9 @@ import styled from "styled-components/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RFValue } from "react-native-responsive-fontsize";
 
+export const MovieCard = styled.View`
+  height: 90%;
+`;
 export const Banner = styled.Image`
   width: 100%;
   height: 90%;
@@ -45,6 +48,7 @@ export const DescriptionWrapper = styled.View`
   border-bottom-right-radius: 20px;
   border-bottom-left-radius: 20px;
   width: 100%;
+  max-height: 30%;
   border-top-width: 1px;
   border-top-color: #888;
   border-top-style: solid;

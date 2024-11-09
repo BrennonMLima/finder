@@ -27,11 +27,11 @@ const LoginScreen: React.FC<LoginProps> = ({ onLogin }) => {
   // const handleUsernameChange = (text: string) => setUsername(text);
   // const handlePasswordChange = (text: string) => setPassword(text);
 
-  useEffect(() =>{
+  useEffect(() => {
     const checkToken = async () => {
       const token = await getToken();
-      if(token){
-        router.replace("/(tabs)")
+      if (token) {
+        router.replace("/(tabs)");
       }
     };
 
