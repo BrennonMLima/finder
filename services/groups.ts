@@ -1,5 +1,12 @@
 import api from "./api";
 import unorm from "unorm";
+export interface Group {
+  id: string;
+  name: string;
+  description: string;
+  genre: string;
+  userCount: number;
+}
 
 export const getAllGroups = async () => {
   return await api.get("/group");
@@ -79,7 +86,10 @@ export const convertGenresToIds = (genresString: string): string => {
   const ids = [];
 
   for (const genre of genres) {
-    const normalizedGenre = unorm.nfd(genre).replace(/[\u0300-\u036f]/g, "").toLowerCase(); // Normalização e lower case
+    const normalizedGenre = unorm
+      .nfd(genre)
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase(); // Normalização e lower case
     const id = genreMap[normalizedGenre];
 
     if (id !== undefined) {

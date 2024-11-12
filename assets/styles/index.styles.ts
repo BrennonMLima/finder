@@ -32,7 +32,7 @@ export const TitleContainer = styled.View`
 `;
 
 export const MovieTitle = styled.Text`
-  font-size: ${RFValue(22)}px;
+  font-size: ${RFValue(20)}px;
   color: #ddd;
 `;
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import { Link } from "expo-router";
-import { getAllGroups, getUsersInGroup } from "@/services/groups";
+import { getUsersInGroup, Group } from "@/services/groups";
 import { Container } from "@/assets/styles/global.styles";
 import {
   Header,
@@ -13,14 +13,7 @@ import {
   HeaderText,
 } from "@/assets/styles/groups.styles";
 import CreateGroupModal from "../createGroupModal";
-
-interface Group {
-  id: string;
-  name: string;
-  description: string;
-  genre: string;
-  userCount: number;
-}
+import { getUserGroups } from "@/services/users";
 
 export default function GroupScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -29,22 +22,23 @@ export default function GroupScreen() {
 
   const fetchGroupsAndUsers = async () => {
     try {
-      const response = await getAllGroups();
-      if (response.data.groups) {
-        const groupsWithUserCount = await Promise.all(
-          response.data.groups.map(async (group: Group) => {
-            try {
-              const usersResponse = await getUsersInGroup(group.id);
-              return { ...group, userCount: usersResponse.data.length };
-            } catch (error) {
-              return { ...group, userCount: 0 };
-            }
-          })
-        );
-        setGroups(groupsWithUserCount);
-      }
+      const response = await getUserGroups();
+      console.log("resposta", response);
+      const groups = response.data;
+
+      const groupsWithUserCount = await Promise.all(
+        groups.map(async (group: Group) => {
+          try {
+            const usersResponse = await getUsersInGroup(group.id);
+            return { ...group, userCount: usersResponse.data.length };
+          } catch (error) {
+            return { ...group, userCount: 0 };
+          }
+        })
+      );
+      setGroups(groupsWithUserCount);
     } catch (error) {
-      setError("Voce ainda nao esta em um grupo");
+      setError("Você ainda não está em um grupo");
     }
   };
 
