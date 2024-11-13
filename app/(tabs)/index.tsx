@@ -109,12 +109,6 @@ export default function HomeScreen() {
 
   const fetchMovies = async (pageNumber = 1, genreIds = "") => {
     setLoading(true);
-    console.log(
-      "Buscando filmes para pageNumber:",
-      pageNumber,
-      "genreIds:",
-      genreIds
-    );
     try {
       const genresParam = genreIds ? `&with_genres=${genreIds}` : "";
       const url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}${genresParam}&sort_by=popularity.desc&vote_count.gte=5000&page=${pageNumber}`;
@@ -137,7 +131,7 @@ export default function HomeScreen() {
         });
       }
 
-      setMovies((prevMovies) => [...prevMovies, ...data.results]);
+      // setMovies((prevMovies) => [...prevMovies, ...data.results]);
     } catch (error) {
       console.error("Erro ao buscar filmes:", error);
       setMovies([]);
@@ -148,8 +142,8 @@ export default function HomeScreen() {
 
   const handleSwipe = (direction: string) => {
     const nextIndex = currentIndex + 1;
-    if (nextIndex >= movies.length - 5 && !loading) {
-      setPage((prevPage) => prevPage + 1);
+    if (nextIndex >= movies.length - 5) {
+      setPage((prevPage) => prevPage + 1);  
       fetchMovies(
         page + 1,
         convertGenresToIds(userGroups.flatMap((group) => group.genre).join(","))
