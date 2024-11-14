@@ -22,6 +22,7 @@ import {
 } from "../../assets/styles/index.styles";
 import { convertGenresToIds, Group, getAllGroups } from "@/services/groups";
 import { getUserGroups } from "@/services/users";
+import { addFilm } from "@/services/films";
 
 const API_KEY = "30feaffc6e5c122072bd41275477c810";
 
@@ -140,8 +141,19 @@ export default function HomeScreen() {
     }
   };
 
-  const handleSwipe = (direction: string) => {
+  const handleSwipe = async (direction: string) => {
     const nextIndex = currentIndex + 1;
+
+    if(direction === "right" && currentMovie){
+      try{
+        const isVoted = true;
+        await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted)
+        console.log("Filme salvo com sucesso:", currentMovie.title, " ID: ", currentMovie.id);
+      } catch (error) {
+        console.error("Erro ao salvar filme:", error);
+      }
+    }
+
     if (nextIndex >= movies.length - 5) {
       setPage((prevPage) => prevPage + 1);  
       fetchMovies(
