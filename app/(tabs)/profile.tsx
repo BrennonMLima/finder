@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Text, Modal, View } from "react-native";
+import { Text, View } from "react-native";
 import {
   Container,
   Content,
   ProfileImage,
   Nickname,
   Links,
-  MenuContainer,
-  MenuItem,
-  MenuItemText,
-  SettingsIconWrapper,
-  Separator,
 } from "@/assets/styles/profile.styles";
 import { getUserFromToken, User } from "@/services/users";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,8 +13,16 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { StyledButton, ButtonLabel } from "@/assets/styles/global.styles";
-import { Overlay, ModalWrapper } from "@/assets/styles/modal.styles";
+import {
+  StyledButton,
+  ButtonLabel,
+  MenuContainer,
+  MenuItem,
+  MenuItemText,
+  Separator,
+  SettingsIconWrapper,
+} from "@/assets/styles/global.styles";
+import ConfirmationModal from "../confirmationModal";
 
 export default function ProfileScreen() {
   const [error, setError] = useState("");
@@ -78,7 +81,11 @@ export default function ProfileScreen() {
       {menuVisible && (
         <MenuContainer>
           <MenuItem onPress={handleEditProfile}>
-            <MaterialCommunityIcons name="account-edit-outline" size={20} color="#fff" />
+            <MaterialCommunityIcons
+              name="account-edit-outline"
+              size={20}
+              color="#fff"
+            />
             <MenuItemText>Editar Perfil</MenuItemText>
           </MenuItem>
           <Separator />
@@ -99,27 +106,15 @@ export default function ProfileScreen() {
         <Links>Avaliar Filmes</Links>
       </Content>
 
-      {/* Modal de confirmação de logout */}
-      <Modal
-        transparent={true}
+      {/* Modal de confirmação de logout usando o componente reutilizável */}
+      <ConfirmationModal
         visible={logoutConfirmVisible}
-        animationType="fade"
-        onRequestClose={cancelLogout}
-      >
-        <Overlay onPress={cancelLogout}>
-          <ModalWrapper>
-            <Text style={{ fontSize: 18, marginBottom: 20, color: "#fff" }}>
-              Tem certeza de que deseja sair?
-            </Text>
-            <StyledButton onPress={handleLogout}>
-              <ButtonLabel>Sair</ButtonLabel>
-            </StyledButton>
-            <StyledButton onPress={cancelLogout} secondColor>
-              <ButtonLabel secondColor>Cancelar</ButtonLabel>
-            </StyledButton>
-          </ModalWrapper>
-        </Overlay>
-      </Modal>
+        onConfirm={handleLogout}
+        onCancel={cancelLogout}
+        title="Tem certeza de que deseja sair?"
+        confirmText="Sair"
+        cancelText="Cancelar"
+      />
     </Container>
   );
 }

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, View, TouchableOpacity, Alert } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { getGroupById, getUsersInGroup, deleteGroup } from "@/services/groups";
-import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import {
   ButtonText,
   EventDate,
@@ -15,21 +16,33 @@ import {
   Members,
   NewEventButton,
   RankingBtn,
-  StyledButton,
   Texto,
 } from "@/assets/styles/groupdetail.styles";
 import CreateEventModal from "../createEventModal";
 import { createEvent, getEventsByGroup } from "@/services/events";
 import { Event } from "@/services/events";
+import {
+  MenuContainer,
+  MenuItem,
+  MenuItemText,
+  Separator,
+  SettingsIcon,
+  StyledButtonShort,
+} from "@/assets/styles/global.styles";
+import ConfirmationModal from "../confirmationModal";
 
 export default function GroupDetailScreen() {
   const { id } = useLocalSearchParams();
+  const router = useRouter();
   const [groupName, setGroupName] = useState<string>("");
   const [groupDescription, setGroupDescription] = useState<string>("");
   const [members, setMembers] = useState<string[]>([]);
   const [event, setEvent] = useState<Event | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [menuVisible, setMenuVisible] = useState<boolean>(false);
+  const [leaveGroupConfirmVisible, setLeaveGroupConfirmVisible] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const fetchGroupDetails = async () => {
@@ -41,9 +54,8 @@ export default function GroupDetailScreen() {
 
           const membersResponse = await getUsersInGroup(id as string);
           setMembers(membersResponse.data);
-          
+
           const recentEvent = await getEventsByGroup(group.id);
-          console.log("recente",recentEvent)
           if (recentEvent) {
             setEvent(recentEvent);
           }
@@ -51,7 +63,7 @@ export default function GroupDetailScreen() {
           setError("Erro ao carregar os detalhes do grupo.");
         }
       } else {
-        setError("ID do grupo nÃ£o fornecido.");
+        setError("ID do grupo não fornecido.");
       }
     };
 
@@ -63,6 +75,7 @@ export default function GroupDetailScreen() {
       try {
         await deleteGroup(id as string);
         Alert.alert("Grupo deletado", "O grupo foi deletado com sucesso.");
+        router.back();
       } catch (error) {
         setError("Erro ao deletar o grupo.");
       }
@@ -85,6 +98,18 @@ export default function GroupDetailScreen() {
     }
   };
 
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+  };
+
+  const confirmLeaveGroup = () => {
+    setLeaveGroupConfirmVisible(true);
+  };
+
+  const cancelLeaveGroup = () => {
+    setLeaveGroupConfirmVisible(false);
+  };
+
   if (error) {
     return <Texto>{error}</Texto>;
   }
@@ -101,6 +126,35 @@ export default function GroupDetailScreen() {
         flex: 1,
       }}
     >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={28} color="#fff" />
+        </TouchableOpacity>
+
+        <SettingsIcon onPress={toggleMenu}>
+          <Ionicons name="ellipsis-vertical" size={28} color="#fff" />
+        </SettingsIcon>
+      </View>
+
+      {menuVisible && (
+        <MenuContainer>
+          <MenuItem onPress={() => {}}>
+            <Feather name="edit" size={20} color="#fff" />
+            <MenuItemText>Editar Grupo</MenuItemText>
+          </MenuItem>
+          <Separator />
+          <MenuItem onPress={confirmLeaveGroup}>
+            <FontAwesome name="sign-out" size={20} color="#fff" />
+            <MenuItemText>Sair do Grupo</MenuItemText>
+          </MenuItem>
+        </MenuContainer>
+      )}
       <GroupHeader>
         <Texto style={{ fontSize: 24, fontWeight: "bold" }}>{groupName}</Texto>
         <Texto>{groupDescription}</Texto>
@@ -134,9 +188,9 @@ export default function GroupDetailScreen() {
       </EventInfo>
 
       <RankingBtn>
-        <StyledButton>
+        <StyledButtonShort>
           <ButtonText>Ver Ranking de Filmes</ButtonText>
-        </StyledButton>
+        </StyledButtonShort>
       </RankingBtn>
 
       <Footer>
@@ -147,16 +201,23 @@ export default function GroupDetailScreen() {
             <Texto key={index}>{member}</Texto>
           ))}
         </Members>
-
-        <TouchableOpacity onPress={handleDeleteGroup}>  
-          <FontAwesome name="trash" size={24} color="red" />
-        </TouchableOpacity>
       </Footer>
 
+      {/* Modal para criar evento */}
       <CreateEventModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onCreate={handleCreateEvent}
+      />
+
+      {/* Modal de confirmação para sair do grupo */}
+      <ConfirmationModal
+        visible={leaveGroupConfirmVisible}
+        onConfirm={handleDeleteGroup}
+        onCancel={cancelLeaveGroup}
+        title="Tem certeza de que deseja sair do grupo?"
+        confirmText="Sair"
+        cancelText="Cancelar"
       />
     </ScrollView>
   );

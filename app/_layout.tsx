@@ -49,7 +49,7 @@ export default function RootLayout() {
         <Stack.Screen name="signup" options={{ headerShown: false }} />
         <Stack.Screen
           name="groupdetail/[id]"
-          options={{ headerShown: true }}
+          options={{ headerShown: false }}
         />
       </Stack>
     </ThemeProvider>

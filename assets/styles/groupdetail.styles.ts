@@ -19,6 +19,7 @@ const GroupHeader = styled.View`
   align-items: center;
   text-align: center;
   gap: 10px;
+  margin: 30px 0;
 `;
 
 const EventInfo = styled.View`
@@ -59,13 +60,6 @@ const Footer = styled.View`
   align-items: flex-end;
 `;
 
-const StyledButton = styled.TouchableOpacity`
-  background-color: #007bff;
-  padding: 10px 20px;
-  border-radius: 10px;
-  align-items: end;
-`;
-
 const NewEventButton = styled.TouchableOpacity`
   background-color: #007bff;
   padding: 10px 5px;
@@ -97,7 +91,6 @@ export {
   RankingBtn,
   Members,
   Footer,
-  StyledButton,
   NewEventButton,
   ButtonText,
   Texto,
