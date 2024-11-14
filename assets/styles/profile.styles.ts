@@ -1,5 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components/native";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export const Container = styled(SafeAreaView)`
   flex: 1;
@@ -12,6 +13,8 @@ export const Container = styled(SafeAreaView)`
 export const Content = styled.View`
   align-items: center;
   width: 100%;
+  margin-top: 30px;
+  z-index: 0;
 `;
 
 export const ProfileImage = styled.Image`
@@ -48,39 +51,49 @@ export const LogoutButton = styled.TouchableOpacity`
 export const LogoutButtonText = styled.Text`
   color: #262626;
   font-weight: bold;
-  font-size: 28px;
+  font-size: 18px;
   text-align: center;
 `;
 
-export const Modal = styled.View`
+export const SettingsIconWrapper = styled.TouchableOpacity`
   position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  flex: 1;
-  justify-content: center;
-  align-items: center;
+  top: 20px;
+  right: 20px;
+  z-index: 1;
 `;
 
-export const ModalContent = styled.View`
-  background-color: white;
-  padding: 20px;
-  width: 300px;
-  border-radius: 10px;
-`;
-
-export const ModalButton = styled.TouchableOpacity`
-  margin-bottom: 10px;
-`;
-
-export const ModalButtonText = styled.Text`
-  font-size: 16px;
-  color: #000;
-`;
-
-export const ModalCloseButton = styled.TouchableOpacity`
+export const MenuContainer = styled.View`
   position: absolute;
-  top: 10px;
+  top: 55px;
   right: 10px;
+  background-color: #333;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 10;
+  /* Sombreamento para iOS */
+  shadow-color: #000;
+  shadow-offset: 0px 3px;
+  shadow-opacity: 0.3;
+  shadow-radius: 4.65px;
+  /* Sombreamento para Android */
+  elevation: 8;
+`;
+
+export const MenuItem = styled.TouchableOpacity`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 5px 10px;
+`;
+
+export const MenuItemText = styled.Text`
+  font-size: 16px;
+  color: #fff;
+`;
+
+export const Separator = styled.View`
+  height: 1px;
+  background-color: #555;
+  width: 100%;
+  margin: 8px 0;
 `;

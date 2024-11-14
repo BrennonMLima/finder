@@ -3,16 +3,19 @@ import { RFValue } from "react-native-responsive-fontsize";
 
 const EventDate = styled.View`
   flex-direction: row;
+  align-items: center;
   gap: 10px;
+  margin-top: 10px;
 `;
 
-const LocalEvent = styled.View`
+const EventLocation = styled.View`
   flex-direction: row;
+  align-items: center;
   gap: 10px;
   margin-top: 20px;
 `;
 
-const EventHeader = styled.View`
+const GroupHeader = styled.View`
   align-items: center;
   text-align: center;
   gap: 10px;
@@ -24,6 +27,20 @@ const EventInfo = styled.View`
   margin: 15px 0;
   padding: 5px 20px;
   border-radius: 20px;
+`;
+
+const EventName = styled.Text`
+  font-size: ${RFValue(20)}px;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+`;
+
+const EventDescription = styled.Text`
+  font-size: ${RFValue(16)}px;
+  text-align: center;
+  color: #ddd;
+  margin-top: 5px;
 `;
 
 const RankingBtn = styled.View`
@@ -64,6 +81,7 @@ const ButtonText = styled.Text`
   font-weight: bold;
   text-align: center;
 `;
+
 const Texto = styled.Text`
   font-size: ${RFValue(16)}px;
   color: #ddd;
@@ -71,9 +89,11 @@ const Texto = styled.Text`
 
 export {
   EventDate,
-  LocalEvent,
-  EventHeader,
+  EventLocation,
+  GroupHeader,
   EventInfo,
+  EventName,
+  EventDescription,
   RankingBtn,
   Members,
   Footer,

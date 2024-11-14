@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, View, TouchableOpacity, Alert } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { getGroupById, getUsersInGroup, deleteGroup } from "@/services/groups";
-import { FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import {
   ButtonText,
   EventDate,
-  EventHeader,
+  EventDescription,
   EventInfo,
+  EventLocation,
+  EventName,
   Footer,
-  LocalEvent,
+  GroupHeader,
   Members,
   NewEventButton,
   RankingBtn,
@@ -49,7 +51,7 @@ export default function GroupDetailScreen() {
           setError("Erro ao carregar os detalhes do grupo.");
         }
       } else {
-        setError("ID do grupo não fornecido.");
+        setError("ID do grupo nÃ£o fornecido.");
       }
     };
 
@@ -99,10 +101,10 @@ export default function GroupDetailScreen() {
         flex: 1,
       }}
     >
-      <EventHeader>
+      <GroupHeader>
         <Texto style={{ fontSize: 24, fontWeight: "bold" }}>{groupName}</Texto>
         <Texto>{groupDescription}</Texto>
-      </EventHeader>
+      </GroupHeader>
 
       <RankingBtn>
         <NewEventButton onPress={() => setModalVisible(true)}>
@@ -113,10 +115,18 @@ export default function GroupDetailScreen() {
       <EventInfo>
         {event ? (
           <View>
-            <Texto>Nome: {event.name}</Texto>
-            <Texto>Descrição: {event.description}</Texto>
-            <Texto>Data: {new Date(event.date).toLocaleDateString()}</Texto>
-            <Texto>Local: {event.location}</Texto>
+            <EventName>{event.name}</EventName>
+            <EventDescription>{event.description}</EventDescription>
+
+            <EventLocation>
+              <Feather name="map-pin" size={16} color="#fff" />
+              <Texto>{event.location}</Texto>
+            </EventLocation>
+
+            <EventDate>
+              <Feather name="calendar" size={16} color="#fff" />
+              <Texto>{new Date(event.date).toLocaleDateString()}</Texto>
+            </EventDate>
           </View>
         ) : (
           <Texto>Nenhum evento disponível</Texto>
