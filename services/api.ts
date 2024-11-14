@@ -8,9 +8,7 @@ const api = axios.create({
 export const getToken = async () => {
   try {
     const token = await AsyncStorage.getItem("auth-token");
-    return token
-      ? `Bearer ${token}`
-      : "";
+    return token ? `Bearer ${token}` : "";
   } catch (error) {
     console.error("Error retrieving token:", error);
     return "";
