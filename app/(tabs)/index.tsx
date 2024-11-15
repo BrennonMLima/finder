@@ -154,6 +154,16 @@ export default function HomeScreen() {
       }
     }
 
+    if(direction === "left" && currentMovie){
+      try{
+        const isVoted = false;
+        await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted)
+        console.log("Filme salvo com sucesso:", currentMovie.title, " ID: ", currentMovie.id);
+      } catch (error) {
+        console.error("Erro ao salvar filme:", error);
+      }
+    }
+
     if (nextIndex >= movies.length - 5) {
       setPage((prevPage) => prevPage + 1);  
       fetchMovies(
