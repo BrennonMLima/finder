@@ -25,6 +25,10 @@ import { getUserGroups } from "@/services/users";
 import { addFilm } from "@/services/films";
 
 const API_KEY = "30feaffc6e5c122072bd41275477c810";
+interface Genre {
+  id: number;
+  name: string;
+}
 
 export default function HomeScreen() {
   const [movies, setMovies] = useState<any[]>([]);
@@ -141,14 +145,44 @@ export default function HomeScreen() {
     }
   };
 
+  const fetchGenresForCurrentMovie = async (movieId: number) => {
+    try {
+        const url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const message = `Erro ao carregar gêneros do filme: ${response.status}`;
+            console.error(message);
+            throw new Error(message); // Lança o erro para ser capturado
+        }
+
+        const data = await response.json();
+
+        if (data.genres) {
+            return data.genres;
+        } else {
+            console.error("Resultado inválido ao tentar pegar gêneros");
+            return [];
+        }
+    } catch (error) {
+        console.error("Erro ao buscar gêneros do filme:", error);
+        return [];
+    }
+};
+
+
+
   const handleSwipe = async (direction: string) => {
     const nextIndex = currentIndex + 1;
 
     if(direction === "right" && currentMovie){
       try{
         const isVoted = true;
-        await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted)
+        const genres = await fetchGenresForCurrentMovie(currentMovie.id); 
+        const genreIds = genres.map((genre: Genre) => genre.id).join(",");
+        await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted, genreIds)
         console.log("Filme salvo com sucesso:", currentMovie.title, " ID: ", currentMovie.id);
+        console.log("Generos do filme: ", genreIds);
       } catch (error) {
         console.error("Erro ao salvar filme:", error);
       }
@@ -157,8 +191,11 @@ export default function HomeScreen() {
     if(direction === "left" && currentMovie){
       try{
         const isVoted = false;
-        await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted)
+        const genres = await fetchGenresForCurrentMovie(currentMovie.id); 
+        const genreIds = genres.map((genre: Genre) => genre.id).join(",");
+        await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted, genreIds)
         console.log("Filme salvo com sucesso:", currentMovie.title, " ID: ", currentMovie.id);
+        console.log("Generos do filme: ", genreIds);
       } catch (error) {
         console.error("Erro ao salvar filme:", error);
       }
