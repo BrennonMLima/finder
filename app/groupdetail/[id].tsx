@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, View, TouchableOpacity, Alert } from "react-native";
+import { ScrollView, View, Pressable, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { getGroupById, getUsersInGroup, deleteGroup } from "@/services/groups";
 import { Feather, Ionicons } from "@expo/vector-icons";
@@ -18,7 +18,7 @@ import {
   RankingBtn,
   Texto,
 } from "@/assets/styles/groupdetail.styles";
-import CreateEventModal from "../createEventModal";
+import CreateEventModal from "../../components/createEventModal";
 import { createEvent, getEventsByGroup } from "@/services/events";
 import { Event } from "@/services/events";
 import {
@@ -29,7 +29,8 @@ import {
   SettingsIcon,
   StyledButtonShort,
 } from "@/assets/styles/global.styles";
-import ConfirmationModal from "../confirmationModal";
+import ConfirmationModal from "../../components/confirmationModal";
+import EditGroupModal from "@/components/editGroupModal";
 
 export default function GroupDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -43,6 +44,7 @@ export default function GroupDetailScreen() {
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
   const [leaveGroupConfirmVisible, setLeaveGroupConfirmVisible] =
     useState<boolean>(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchGroupDetails = async () => {
@@ -133,9 +135,9 @@ export default function GroupDetailScreen() {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity onPress={() => router.back()}>
+        <Pressable onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={28} color="#fff" />
-        </TouchableOpacity>
+        </Pressable>
 
         <SettingsIcon onPress={toggleMenu}>
           <Ionicons name="ellipsis-vertical" size={28} color="#fff" />
@@ -144,7 +146,7 @@ export default function GroupDetailScreen() {
 
       {menuVisible && (
         <MenuContainer>
-          <MenuItem onPress={() => {}}>
+          <MenuItem onPress={() => setEditModalVisible(true)}>
             <Feather name="edit" size={20} color="#fff" />
             <MenuItemText>Editar Grupo</MenuItemText>
           </MenuItem>
@@ -209,6 +211,15 @@ export default function GroupDetailScreen() {
         onClose={() => setModalVisible(false)}
         onCreate={handleCreateEvent}
       />
+
+    <EditGroupModal
+      visible={editModalVisible}
+      onClose={() => setEditModalVisible(false)}
+      groupId={id as string}
+      initialName={groupName}
+      initialDescription={groupDescription}
+      initialGenres={[]}
+    />
 
       {/* Modal de confirmação para sair do grupo */}
       <ConfirmationModal

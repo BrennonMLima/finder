@@ -39,7 +39,7 @@ export const Links = styled.Text`
   margin-bottom: 10px;
 `;
 
-export const LogoutButton = styled.TouchableOpacity`
+export const LogoutButton = styled.Pressable`
   width: 150px;
   height: 45px;
   border-radius: 15px;

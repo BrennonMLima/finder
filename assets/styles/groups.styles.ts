@@ -15,7 +15,7 @@ export const HeaderText = styled.Text`
   text-align: start;
 `;
 
-export const NewGroupButton = styled.TouchableOpacity`
+export const NewGroupButton = styled.Pressable`
   background-color: #007bff;
   padding: 10px 5px;
   border-radius: 8px;

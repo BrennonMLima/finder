@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
-import { Link } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { Pressable, ScrollView } from "react-native";
+import { useFocusEffect, useRouter } from "expo-router";
 import { getUsersInGroup, Group } from "@/services/groups";
 import { Container } from "@/assets/styles/global.styles";
 import {
@@ -12,13 +12,15 @@ import {
   GroupDetails,
   HeaderText,
 } from "@/assets/styles/groups.styles";
-import CreateGroupModal from "../createGroupModal";
+import CreateGroupModal from "../../components/createGroupModal";
 import { getUserGroups } from "@/services/users";
 
 export default function GroupScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
   const [error, setError] = useState("");
+
+  const router = useRouter();
 
   const fetchGroupsAndUsers = async () => {
     try {
@@ -46,6 +48,16 @@ export default function GroupScreen() {
     fetchGroupsAndUsers();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchGroupsAndUsers();
+    }, [])
+  );
+  
+  const handleGroupPress = (groupId: string) => {
+    router.push(`/groupdetail/${groupId}`);
+  };
+
   return (
     <Container>
       <Header>
@@ -60,14 +72,18 @@ export default function GroupScreen() {
         style={{ width: "100%" }}
       >
         {groups.map((group) => (
-          <Link key={group.id} href={`/groupdetail/${group.id}`}>
+          <Pressable
+            key={group.id}
+            onPress={() => handleGroupPress(group.id)}
+            style={{ width: "100%" }}
+          >
             <GroupContainer>
               <GroupTitle>{group.name}</GroupTitle>
               <GroupDetails>
                 {group.userCount} participantes - Prox. evento: xx/xx/xx
               </GroupDetails>
             </GroupContainer>
-          </Link>
+          </Pressable>
         ))}
       </ScrollView>
 

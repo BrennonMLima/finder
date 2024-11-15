@@ -60,7 +60,7 @@ const Footer = styled.View`
   align-items: flex-end;
 `;
 
-const NewEventButton = styled.TouchableOpacity`
+const NewEventButton = styled.Pressable`
   background-color: #007bff;
   padding: 10px 5px;
   border-radius: 8px;

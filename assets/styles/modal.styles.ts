@@ -32,7 +32,7 @@ export const TagContainer = styled.View`
   z-index: -1;
 `;
 
-export const Tag = styled.TouchableOpacity`
+export const Tag = styled.Pressable`
   background-color: #007bff;
   padding: 8px 12px;
   border-radius: 20px;
