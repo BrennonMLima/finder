@@ -153,12 +153,13 @@ export default function HomeScreen() {
         if (!response.ok) {
             const message = `Erro ao carregar gêneros do filme: ${response.status}`;
             console.error(message);
-            throw new Error(message); // Lança o erro para ser capturado
+            throw new Error(message);
         }
 
         const data = await response.json();
 
         if (data.genres) {
+            console.log(data.genres);
             return data.genres;
         } else {
             console.error("Resultado inválido ao tentar pegar gêneros");
@@ -179,7 +180,8 @@ export default function HomeScreen() {
       try{
         const isVoted = true;
         const genres = await fetchGenresForCurrentMovie(currentMovie.id); 
-        const genreIds = genres.map((genre: Genre) => genre.id).join(",");
+        const genreIds = genres.map((genre: Genre) => genre.id);
+        console.log("ids do genreIds: ",genreIds);
         await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted, genreIds)
         console.log("Filme salvo com sucesso:", currentMovie.title, " ID: ", currentMovie.id);
         console.log("Generos do filme: ", genreIds);

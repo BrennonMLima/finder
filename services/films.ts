@@ -20,13 +20,14 @@ export const getFilmById = async (filmId: string) => {
     }
 }
 
-export const addFilm = async (id: string, title: string, description: string, isVoted: boolean) => {
+export const addFilm = async (id: string, title: string, description: string, isVoted: boolean, genreIds: number[]) => {
     try {
         const response = await api.post("/films", {
             id,
             title,
             description,
-            isVoted
+            isVoted,
+            genreIds
         });
         return response.data;
     } catch(error){
