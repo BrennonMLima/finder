@@ -225,7 +225,6 @@ export default function HomeScreen() {
 
   const posterUrl = `https://image.tmdb.org/t/p/w500${currentMovie.poster_path}`;
 
-  // CÃ¡lculo da rotaÃ§Ã£o baseado na posiÃ§Ã£o do card
   const rotate = position.x.interpolate({
     inputRange: [-150, 0, 150],
     outputRange: ["-5deg", "0deg", "5deg"],
@@ -234,27 +233,18 @@ export default function HomeScreen() {
 
   return (
     <Container>
-      <View style={{ padding: 10, backgroundColor: "#333" }}>
-        {userGroups.length > 0 ? (
-          <Picker
-            selectedValue={selectedGroup}
-            onValueChange={(itemValue) => setSelectedGroup(itemValue)}
-            style={styles.picker}
-            dropdownIconColor="gray"
-          >
-            <Picker.Item label="Todos" value="all" style={styles.pickerItem} />
-            {userGroups.map((group) => (
-              <Picker.Item
-                key={group.id}
-                label={group.name}
-                value={group.id}
-                style={styles.pickerItem}
-              />
-            ))}
-          </Picker>
-        ) : (
-          <Text style={styles.loadingText}>Carregando grupos...</Text>
-        )}
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={selectedGroup}
+          onValueChange={(itemValue) => setSelectedGroup(itemValue)}
+          style={styles.picker}
+          dropdownIconColor="gray"
+        >
+          <Picker.Item label="Todos" value="all" />
+          {userGroups.map((group) => (
+            <Picker.Item key={group.id} label={group.name} value={group.id} />
+          ))}
+        </Picker>
       </View>
       <Animated.View
         {...panResponder.panHandlers}
@@ -288,7 +278,6 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   pickerContainer: {
-    backgroundColor: "#eee", // Cinza claro
     padding: 10,
     width: "90%", // Largura aumentada
     alignSelf: "center",
