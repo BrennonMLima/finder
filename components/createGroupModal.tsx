@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Alert, FlatList, TouchableOpacity, Text, View } from "react-native";
+import { Modal, Alert, FlatList, Pressable, Text, View } from "react-native";
 import {
   Overlay,
   ModalWrapper,
@@ -13,30 +13,8 @@ import {
   StyledButton,
   ButtonLabel,
 } from "@/assets/styles/global.styles";
-import { createGroup } from "@/services/groups";
+import { createGroup,genresList } from "@/services/groups";
 import { Feather } from '@expo/vector-icons';
-
-const genresList = [
-  { name: "acao", id: 28 },
-  { name: "aventura", id: 12 },
-  { name: "comedia", id: 35 },
-  { name: "animacao", id: 16 },
-  { name: "crime", id: 80 },
-  { name: "documentario", id: 99 },
-  { name: "drama", id: 18 },
-  { name: "familia", id: 10751 },
-  { name: "fantasia", id: 14 },
-  { name: "historia", id: 36 },
-  { name: "terror", id: 27 },
-  { name: "musica", id: 10402 },
-  { name: "misterio", id: 9648 },
-  { name: "romance", id: 10749 },
-  { name: "ficção cientifica", id: 878 },
-  { name: "cinema tv", id: 10770 },
-  { name: "thriller", id: 53 },
-  { name: "guerra", id: 10752 },
-  { name: "faroeste", id: 37 },
-];
 
 interface CreateGroupModalProps {
   visible: boolean;
@@ -52,36 +30,36 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
   const [groupGenre, setGroupGenre] = useState("");
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<{ id: number; name: string }[]>([]);
   const [filteredGenres, setFilteredGenres] = useState(genresList);
 
-  const addGenre = (genre: string) => {
-    if (!selectedGenres.includes(genre)) {
+  const addGenre = (genre: { id: number; name: string }) => {
+    if (!selectedGenres.some((g) => g.id === genre.id)) {
       const newSelectedGenres = [...selectedGenres, genre];
       setSelectedGenres(newSelectedGenres);
       setGroupGenre("");
-      filterGenres("", newSelectedGenres);
+      filterGenres("", newSelectedGenres.map((g) => g.name));
     }
   };
 
-  const removeGenre = (genre: string) => {
-    const updatedGenres = selectedGenres.filter((g) => g !== genre);
+  const removeGenre = (genreId: number) => {
+    const updatedGenres = selectedGenres.filter((g) => g.id !== genreId);
     setSelectedGenres(updatedGenres);
-    filterGenres(groupGenre, updatedGenres);
+    filterGenres(groupGenre, updatedGenres.map((g) => g.name));
   };
 
-  const filterGenres = (text: string, selected: string[]) => {
+  const filterGenres = (text: string, selectedNames: string[]) => {
     const filtered = genresList.filter(
       (genre) =>
         genre.name.toLowerCase().includes(text.toLowerCase()) &&
-        !selected.includes(genre.name)
+        !selectedNames.includes(genre.name)
     );
     setFilteredGenres(filtered);
   };
 
   const handleGenreChange = (text: string) => {
     setGroupGenre(text);
-    filterGenres(text, selectedGenres);
+    filterGenres(text, selectedGenres.map((g) => g.name));
   };
 
   const handleCreateGroup = async () => {
@@ -91,7 +69,8 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
     }
 
     try {
-      await createGroup(groupName, groupDescription, selectedGenres.join(","));
+      const genreIds = selectedGenres.map((genre) => genre.id);
+      await createGroup(groupName, groupDescription, genreIds);
       onClose();
       Alert.alert("Sucesso", "Grupo criado com sucesso!");
       onGroupCreated();
@@ -113,6 +92,7 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
     >
       <Overlay onPress={onClose}>
         <ModalWrapper onPress={() => {}}>
+
           <Title>Criar Novo Grupo</Title>
           <StyledInput
             placeholder="Nome"
@@ -137,7 +117,7 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                 data={filteredGenres}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => addGenre(item.name)}>
+                  <Pressable onPress={() => addGenre(item)}>
                     <View
                       style={{
                         flexDirection: "row",
@@ -149,9 +129,9 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                       }}
                     >
                       <Text style={{ flex: 1 }}>{item.name}</Text>
-                      <Feather name="arrow-up-right" size={18} color="#007bff" /> 
+                      <Feather name="arrow-up-right" size={18} color="#007bff" />
                     </View>
-                  </TouchableOpacity>
+                  </Pressable>
                 )}
                 style={{
                   position: "absolute",
@@ -169,9 +149,9 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
           </View>
 
           <TagContainer>
-            {selectedGenres.map((genre, index) => (
-              <Tag key={index} onPress={() => removeGenre(genre)}>
-                <TagText>{genre} x</TagText>
+            {selectedGenres.map((genre) => (
+              <Tag key={genre.id} onPress={() => removeGenre(genre.id)}>
+                <TagText>{genre.name} x</TagText>
               </Tag>
             ))}
           </TagContainer>
@@ -189,3 +169,4 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
 };
 
 export default CreateGroupModal;
+

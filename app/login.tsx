@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
@@ -85,15 +85,15 @@ const LoginScreen: React.FC<LoginProps> = ({ onLogin }) => {
 
         {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
 
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Pressable style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Entrar</Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity>
+        <Pressable>
           <Link href={"./signup"}>
             <Text style={styles.link}>Não tem uma conta? Cadastre-se!</Text>
           </Link>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </KeyboardAvoidingView>
   );

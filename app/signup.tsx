@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
@@ -83,17 +83,17 @@ const RegisterScreen: React.FC<RegisterProps> = ({ onRegister }) => {
 
         {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
 
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Pressable style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Criar</Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity>
+        <Pressable>
           <Link href={"./login"}>
             <Text style={styles.link}>
               Já tem uma conta? Clique aqui e faça Login
             </Text>
           </Link>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </KeyboardAvoidingView>
   );

@@ -8,6 +8,29 @@ export interface Group {
   userCount: number;
 }
 
+export const genresList = [
+  { name: "acao", id: 28 },
+  { name: "aventura", id: 12 },
+  { name: "comedia", id: 35 },
+  { name: "animacao", id: 16 },
+  { name: "crime", id: 80 },
+  { name: "documentario", id: 99 },
+  { name: "drama", id: 18 },
+  { name: "familia", id: 10751 },
+  { name: "fantasia", id: 14 },
+  { name: "historia", id: 36 },
+  { name: "terror", id: 27 },
+  { name: "musica", id: 10402 },
+  { name: "misterio", id: 9648 },
+  { name: "romance", id: 10749 },
+  { name: "ficção cientifica", id: 878 },
+  { name: "cinema tv", id: 10770 },
+  { name: "thriller", id: 53 },
+  { name: "guerra", id: 10752 },
+  { name: "faroeste", id: 37 },
+];
+
+
 export const getAllGroups = async () => {
   return await api.get("/group");
 };
@@ -25,13 +48,13 @@ export const getGroupById = async (groupId: string) => {
 export const createGroup = async (
   name: string,
   description: string,
-  genre: string
+  genreIds: number[]
 ) => {
   try {
     const response = await api.post("/group", {
       name,
       description,
-      genre,
+      genreIds,
     });
     return response.data;
   } catch (error) {
@@ -42,7 +65,7 @@ export const createGroup = async (
 
 export const deleteGroup = async (groupId: string) => {
   try {
-    await api.delete(`/group/${groupId}`);
+    await api.delete(`/group/${groupId}/leave`);
   } catch (error) {
     console.error(`Erro ao deletar grupo com ID ${groupId}:`, error);
     throw error;
@@ -51,6 +74,11 @@ export const deleteGroup = async (groupId: string) => {
 
 export const getUsersInGroup = async (groupId: string) => {
   return await api.get(`/group/${groupId}/users`);
+};
+
+export const updateGroup = async (groupId: string, groupData: { name: string; description: string; genreId: number[] }) => {
+    const response = await api.put(`/group/${groupId}/`, groupData);
+    return response.data;
 };
 
 // Funções Adicionadas:

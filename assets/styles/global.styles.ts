@@ -20,7 +20,7 @@ export const Title = styled.Text`
   margin-bottom: 20px;
 `;
 
-export const StyledButton = styled.TouchableOpacity<StyledButtonProps>`
+export const StyledButton = styled.Pressable<StyledButtonProps>`
   width: 100%;
   height: 50px;
   background-color: ${(props) => (props.secondColor ? "#555" : "#007bff")};
@@ -31,7 +31,7 @@ export const StyledButton = styled.TouchableOpacity<StyledButtonProps>`
   z-index: -1;
 `;
 
-export const StyledButtonShort = styled.TouchableOpacity`
+export const StyledButtonShort = styled.Pressable`
   background-color: #007bff;
   padding: 10px 20px;
   border-radius: 10px;
@@ -44,14 +44,14 @@ export const ButtonLabel = styled.Text<StyledButtonProps>`
   font-weight: bold;
 `;
 
-export const SettingsIconWrapper = styled.TouchableOpacity`
+export const SettingsIconWrapper = styled.Pressable`
   position: absolute;
   top: 20px;
   right: 20px;
   z-index: 1;
 `;
 
-export const SettingsIcon = styled.TouchableOpacity`
+export const SettingsIcon = styled.Pressable`
   z-index: 1;
 `;
 
@@ -72,7 +72,7 @@ export const MenuContainer = styled.View`
   elevation: 8;
 `;
 
-export const MenuItem = styled.TouchableOpacity`
+export const MenuItem = styled.Pressable`
   display: flex;
   flex-direction: row;
   gap: 10px;

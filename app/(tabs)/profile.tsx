@@ -22,7 +22,7 @@ import {
   Separator,
   SettingsIconWrapper,
 } from "@/assets/styles/global.styles";
-import ConfirmationModal from "../confirmationModal";
+import ConfirmationModal from "../../components/confirmationModal";
 
 export default function ProfileScreen() {
   const [error, setError] = useState("");

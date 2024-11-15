@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Text, View, TouchableOpacity } from "react-native";
+import { Modal, Text, View, Pressable } from "react-native";
 import { Overlay, ModalWrapper } from "@/assets/styles/modal.styles";
 import { StyledButton, ButtonLabel } from "@/assets/styles/global.styles";
 
