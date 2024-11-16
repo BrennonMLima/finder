@@ -194,7 +194,7 @@ export default function HomeScreen() {
       try{
         const isVoted = false;
         const genres = await fetchGenresForCurrentMovie(currentMovie.id); 
-        const genreIds = genres.map((genre: Genre) => genre.id).join(",");
+        const genreIds = genres.map((genre: Genre) => genre.id);
         await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted, genreIds)
         console.log("Filme salvo com sucesso:", currentMovie.title, " ID: ", currentMovie.id);
         console.log("Generos do filme: ", genreIds);
