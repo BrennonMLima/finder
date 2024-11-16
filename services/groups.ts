@@ -6,6 +6,7 @@ export interface Group {
   description: string;
   genre: string;
   userCount: number;
+  nextEventDate: Date;
 }
 
 export const genresList = [
@@ -81,7 +82,6 @@ export const updateGroup = async (groupId: string, groupData: { name: string; de
     return response.data;
 };
 
-// Funções Adicionadas:
 export const convertGenresToIds = (genresString: string): string => {
   const genres = genresString
     .toLowerCase()
@@ -104,7 +104,7 @@ export const convertGenresToIds = (genresString: string): string => {
     musica: 10402,
     misterio: 9648,
     romance: 10749,
-    "ficção cientifica": 878,
+    "ficÃ§Ã£o cientifica": 878,
     "cinema tv": 10770,
     thriller: 53,
     guerra: 10752,
@@ -117,13 +117,13 @@ export const convertGenresToIds = (genresString: string): string => {
     const normalizedGenre = unorm
       .nfd(genre)
       .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase(); // Normalização e lower case
+      .toLowerCase(); // NormalizaÃ§Ã£o e lower case
     const id = genreMap[normalizedGenre];
 
     if (id !== undefined) {
       ids.push(String(id));
     } else {
-      console.warn(`Gênero "${genre}" não encontrado no mapeamento.`);
+      console.warn(`GÃªnero "${genre}" nÃ£o encontrado no mapeamento.`);
       //  Opcional: Retornar uma string vazia se houver erros
     }
   }

@@ -32,9 +32,28 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   const [date, setDate] = useState<string>("");
   const [description, setDescription] = useState<string>("");
 
+  const handleDateChange = (text: string) => {
+    let formattedText = text.replace(/[^0-9]/g, "");
+
+    if (formattedText.length > 2) {
+      formattedText = `${formattedText.slice(0, 2)}/${formattedText.slice(2)}`;
+    }
+    if (formattedText.length > 5) {
+      formattedText = `${formattedText.slice(0, 5)}/${formattedText.slice(5, 9)}`;
+    }
+
+    setDate(formattedText.slice(0, 10));
+  };
+
   const handleCreate = () => {
     if (!name || !location || !date || !description) {
-      Alert.alert("Erro", "Todos os campos são obrigatórios!");
+      Alert.alert("Erro", "Todos os campos sï¿½o obrigatï¿½rios!");
+      return;
+    }
+
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (!dateRegex.test(date)) {
+      Alert.alert("Erro", "Data invï¿½lida! Use o formato DD/MM/AAAA.");
       return;
     }
 
@@ -44,7 +63,6 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
     setDate("");
     setDescription("");
     onClose();
-    Alert.alert("Sucesso", "Evento criado com sucesso!");
   };
 
   return (
@@ -55,13 +73,19 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
 
           <StyledInput placeholder="Nome" value={name} onChangeText={setName} />
           <StyledInput
-            placeholder="Localização"
+            placeholder="LocalizaÃ§Ã£o"
             value={location}
             onChangeText={setLocation}
           />
-          <StyledInput placeholder="Data" value={date} onChangeText={setDate} />
           <StyledInput
-            placeholder="Descrição"
+            placeholder="Data (DD/MM/AAAA)"
+            value={date}
+            onChangeText={handleDateChange}
+            keyboardType="numeric"
+            maxLength={10}
+          />
+          <StyledInput
+            placeholder="DescriÃ§Ã£o"
             value={description}
             onChangeText={setDescription}
           />

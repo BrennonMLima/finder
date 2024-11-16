@@ -45,7 +45,16 @@ export const GroupTitle = styled.Text`
   margin-bottom: 5px;
 `;
 
-export const GroupDetails = styled.Text`
+export const GroupDetails = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
   font-size: ${RFValue(14)}px;
   color: #ccc;
 `;
+
+export const DateContainer = styled.View`
+  display: flex;
+  gap: 0;
+`

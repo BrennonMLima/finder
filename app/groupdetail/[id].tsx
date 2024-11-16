@@ -8,6 +8,7 @@ import {
   ButtonText,
   EventDate,
   EventDescription,
+  EventHeader,
   EventInfo,
   EventLocation,
   EventName,
@@ -19,7 +20,7 @@ import {
   Texto,
 } from "@/assets/styles/groupdetail.styles";
 import CreateEventModal from "../../components/createEventModal";
-import { createEvent, getEventsByGroup } from "@/services/events";
+import { createEvent, getEventsByGroup, updateEvent } from "@/services/events";
 import { Event } from "@/services/events";
 import {
   MenuContainer,
@@ -31,6 +32,7 @@ import {
 } from "@/assets/styles/global.styles";
 import ConfirmationModal from "../../components/confirmationModal";
 import EditGroupModal from "@/components/editGroupModal";
+import EditEventModal from "@/components/editEventModal";
 
 export default function GroupDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -42,10 +44,9 @@ export default function GroupDetailScreen() {
   const [error, setError] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
-  const [leaveGroupConfirmVisible, setLeaveGroupConfirmVisible] =
-    useState<boolean>(false);
+  const [leaveGroupConfirmVisible, setLeaveGroupConfirmVisible] = useState<boolean>(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
-
+  const [editEventModalVisible, setEditEventModalVisible] = useState<boolean>(false);
   useEffect(() => {
     const fetchGroupDetails = async () => {
       if (id) {
@@ -57,9 +58,9 @@ export default function GroupDetailScreen() {
           const membersResponse = await getUsersInGroup(id as string);
           setMembers(membersResponse.data);
 
-          const recentEvent = await getEventsByGroup(group.id);
-          if (recentEvent) {
-            setEvent(recentEvent);
+          const Event = await getEventsByGroup(group.id);
+          if (Event) {
+            setEvent(Event);
           }
         } catch (error) {
           setError("Erro ao carregar os detalhes do grupo.");
@@ -93,13 +94,34 @@ export default function GroupDetailScreen() {
     if (id) {
       try {
         await createEvent(name, location, date, description, id as string);
-        Alert.alert("Evento Criado", "O evento foi criado com sucesso.");
+        const Event = await getEventsByGroup(id as string);
+        if (Event) {
+          setEvent(Event);
+        }
       } catch (error) {
         setError("Erro ao criar evento.");
       }
     }
   };
-
+  
+  const handleEditEvent = async (
+    eventId: string,
+    name: string,
+    location: string,
+    date: string,
+    description: string
+  ) => {
+    try {
+      await updateEvent(eventId, { name, location, date, description });
+  
+      const Event = await getEventsByGroup(id as string);
+      if (Event) {
+        setEvent(Event);
+      }
+    } catch {
+      Alert.alert("Erro", "Erro ao atualizar evento.");
+    }
+  };
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
   };
@@ -171,9 +193,14 @@ export default function GroupDetailScreen() {
       <EventInfo>
         {event ? (
           <View>
-            <EventName>{event.name}</EventName>
-            <EventDescription>{event.description}</EventDescription>
-
+            <EventHeader>
+              <EventName></EventName>
+              <EventName>{event.name}</EventName>
+              <Pressable onPress={() => setEditEventModalVisible(true)}>
+              <Feather name="edit-3" size={20} color="#fff" />
+            </Pressable>
+            </EventHeader>
+              <EventDescription>{event.description}</EventDescription>
             <EventLocation>
               <Feather name="map-pin" size={16} color="#fff" />
               <Texto>{event.location}</Texto>
@@ -181,11 +208,11 @@ export default function GroupDetailScreen() {
 
             <EventDate>
               <Feather name="calendar" size={16} color="#fff" />
-              <Texto>{new Date(event.date).toLocaleDateString()}</Texto>
+              <Texto>{new Date(event.date).toLocaleDateString("pt-BR")}</Texto>
             </EventDate>
           </View>
         ) : (
-          <Texto>Nenhum evento disponÃ­vel</Texto>
+          <Texto>Nenhum evento disponí­vel</Texto>
         )}
       </EventInfo>
 
@@ -229,6 +256,17 @@ export default function GroupDetailScreen() {
         title="Tem certeza de que deseja sair do grupo?"
         confirmText="Sair"
         cancelText="Cancelar"
+      />
+
+      <EditEventModal
+          visible={editEventModalVisible}
+          onClose={() => setEditEventModalVisible(false)}
+          onEdit={handleEditEvent}
+          eventId={event?.id || ""}
+          initialName={event?.name || ""}
+          initialLocation={event?.location || ""}
+          initialDate={event?.date || ""}
+          initialDescription={event?.description || ""}
       />
     </ScrollView>
   );
