@@ -9,6 +9,8 @@ import {
   Text,
   Animated,
   StyleSheet,
+  Pressable,
+  Modal,
 } from "react-native";
 import {
   Banner,
@@ -20,9 +22,10 @@ import {
   DescriptionWrapper,
   MovieCard,
 } from "../../assets/styles/index.styles";
-import { convertGenresToIds, Group, getAllGroups } from "@/services/groups";
+import { Group, getGroupGenres } from "@/services/groups";
 import { getUserGroups } from "@/services/users";
 import { addFilm } from "@/services/films";
+
 
 const API_KEY = "30feaffc6e5c122072bd41275477c810";
 interface Genre {
@@ -30,15 +33,24 @@ interface Genre {
   name: string;
 }
 
+
 export default function HomeScreen() {
   const [movies, setMovies] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [visitedPages, setVisitedPages] = useState<number[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState("all"); // null para "Todos"
+  const [selectedGroup, setSelectedGroup] = useState("all");
   const [userGroups, setUserGroups] = useState<Group[]>([]);
   const [loadingGroups, setLoadingGroups] = useState(true);
   const position = React.useRef(new Animated.ValueXY()).current;
+  const [helpModalVisible, setHelpModalVisible] = useState(false);
+
+  const HelpIcon = () => (
+    <Pressable onPress={() => setHelpModalVisible(true)}>
+      <MaterialCommunityIcons name="help-circle-outline" size={24} color="gray" />
+    </Pressable>
+  );
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -65,123 +77,94 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    // Buscar filmes quando selectedGroup ou userGroups mudam
     const fetchGenresAndMovies = async () => {
-      if (!userGroups || userGroups.length === 0) {
-        console.log("userGroups ainda nÃ£o carregado ou estÃ¡ vazio.");
-        return; // Sai da funÃ§Ã£o se userGroups ainda estiver vazio
-      }
-      let genreIds = "";
-      console.log("selectedGroup no inÃ­cio do useEffect:", selectedGroup);
-      if (selectedGroup === "all") {
-        const allGenres = userGroups.flatMap((group) => group.genre).join(",");
-        console.log("All genres selecionados:", allGenres);
-        genreIds = convertGenresToIds(allGenres);
-      } else {
-        try {
-          const group = userGroups.find((g) => g.id === selectedGroup);
-          if (group) {
-            genreIds = convertGenresToIds(group.genre.join(","));
-          } else {
-            console.warn("Grupo selecionado nÃ£o encontrado. Exibindo todos.");
-            const allGenres = userGroups
-              .flatMap((group) => group.genre)
-              .join(",");
-            genreIds = convertGenresToIds(allGenres);
-          }
-        } catch (error) {
-          console.error("Erro ao buscar gÃªneros do grupo:", error);
-          // Em caso de erro, usar todos os gÃªneros
-          const allGenres = userGroups
-            .flatMap((group) => group.genre)
-            .join(",");
-          genreIds = convertGenresToIds(allGenres);
+      setLoading(true);
+      try {
+        let genreIds = "";
+        if (selectedGroup === "all") {
+          const allGenreIds = userGroups.flatMap((group) =>
+            group.genre ? group.genre.split(",").map(Number) : []
+          );
+          genreIds = allGenreIds.join(",");
+        } else {
+          const genresResult = await getGroupGenres(selectedGroup);
+          genreIds = genresResult.genres.map((genre) => genre.id).join(",");
         }
+        fetchMovies(genreIds);
+      } catch (error) {
+        console.error("Erro em fetchGenresAndMovies:", error);
+        setMovies([]);
+      } finally {
+        setLoading(false);
       }
-
-      console.log("selectedGroup:", selectedGroup, "genreIds:", genreIds);
-      setMovies([]);
-      fetchMovies(1, genreIds);
     };
 
-    if (userGroups.length > 0) {
-      console.log("userGroups mudou, iniciando fetchGenresAndMovies");
-      fetchGenresAndMovies();
-    } else {
-      console.log("userGroups ainda nÃ£o carregado ou estÃ¡ vazio.");
-    }
+    fetchGenresAndMovies();
   }, [selectedGroup, userGroups]);
 
-  const fetchMovies = async (pageNumber = 1, genreIds = "") => {
-    setLoading(true);
-    try {
-      const genresParam = genreIds ? `&with_genres=${genreIds}` : "";
-      const url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}${genresParam}&sort_by=popularity.desc&vote_count.gte=5000&page=${pageNumber}`;
-      const response = await fetch(url);
+  const fetchMovies = async (genreIds = "") => {
+    const maxPages = 400;
+    let newPage;
 
+    do {
+      newPage = Math.floor(Math.random() * maxPages) + 1;
+    } while (visitedPages.includes(newPage));
+
+
+    setVisitedPages([...visitedPages, newPage]);
+
+    const genresParam = genreIds ? `&with_genres=${genreIds}` : "";
+    
+    const url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&language=pt-BR${genresParam}&sort_by=popularity.desc&page=${newPage}`;
+
+    try {
+      const response = await fetch(url);
       if (!response.ok) {
-        const message = `Erro ao carregar filmes: ${response.status}`;
-        console.error(message);
-        throw new Error(message); // LanÃ§a o erro para ser capturado
+        throw new Error(`Erro ao carregar filmes: ${response.status}`);
       }
       const data = await response.json();
-
-      if (data.results) {
-        setMovies((prevMovies) => {
-          if (data.results) return [...prevMovies, ...data.results];
-          else {
-            console.error("Resultado invÃ¡lido ao tentar pegar filmes");
-            return [];
-          }
-        });
-      }
-
-      // setMovies((prevMovies) => [...prevMovies, ...data.results]);
+      setMovies(data.results);
     } catch (error) {
       console.error("Erro ao buscar filmes:", error);
       setMovies([]);
-    } finally {
-      setLoading(false);
     }
   };
 
   const fetchGenresForCurrentMovie = async (movieId: number) => {
     try {
-        const url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}`;
-        const response = await fetch(url);
+      const url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}`;
+      const response = await fetch(url);
 
-        if (!response.ok) {
-            const message = `Erro ao carregar gêneros do filme: ${response.status}`;
-            console.error(message);
-            throw new Error(message);
-        }
+      if (!response.ok) {
+        const message = `Erro ao carregar gêneros do filme: ${response.status}`;
+        console.error(message);
+        throw new Error(message);
+      }
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (data.genres) {
-            console.log(data.genres);
-            return data.genres;
-        } else {
-            console.error("Resultado inválido ao tentar pegar gêneros");
-            return [];
-        }
-    } catch (error) {
-        console.error("Erro ao buscar gêneros do filme:", error);
+      if (data.genres) {
+        console.log(data.genres);
+        return data.genres;
+      } else {
+        console.error("Resultado inválido ao tentar pegar gêneros");
         return [];
+      }
+    } catch (error) {
+      console.error("Erro ao buscar gêneros do filme:", error);
+      return [];
     }
-};
-
-
+  };
 
   const handleSwipe = async (direction: string) => {
     const nextIndex = currentIndex + 1;
 
-    if(direction === "right" && currentMovie){
-      try{
+    if (direction === "right" && currentMovie) {
+      try {
         const isVoted = true;
-        const genres = await fetchGenresForCurrentMovie(currentMovie.id); 
+        const genres = await fetchGenresForCurrentMovie(currentMovie.id);
         const genreIds = genres.map((genre: Genre) => genre.id);
-        console.log("ids do genreIds: ",genreIds);
+        console.log("ids do genreIds: ", genreIds);
         await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted, genreIds)
         console.log("Filme salvo com sucesso:", currentMovie.title, " ID: ", currentMovie.id);
         console.log("Generos do filme: ", genreIds);
@@ -190,10 +173,10 @@ export default function HomeScreen() {
       }
     }
 
-    if(direction === "left" && currentMovie){
-      try{
+    if (direction === "left" && currentMovie) {
+      try {
         const isVoted = false;
-        const genres = await fetchGenresForCurrentMovie(currentMovie.id); 
+        const genres = await fetchGenresForCurrentMovie(currentMovie.id);
         const genreIds = genres.map((genre: Genre) => genre.id);
         await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted, genreIds)
         console.log("Filme salvo com sucesso:", currentMovie.title, " ID: ", currentMovie.id);
@@ -203,16 +186,11 @@ export default function HomeScreen() {
       }
     }
 
-    if (nextIndex >= movies.length - 5) {
-      setPage((prevPage) => prevPage + 1);  
-      fetchMovies(
-        page + 1,
-        convertGenresToIds(userGroups.flatMap((group) => group.genre).join(","))
-      );
-    }
-    if (nextIndex < movies.length) {
+    if (nextIndex < movies.length) { // Verifica se há mais filmes antes de chamar fetchMovies
       setCurrentIndex(nextIndex);
       position.x.setValue(0);
+    } else if (movies.length > 0) { // Verifica se há filmes antes de chamar fetchMovies
+      fetchMovies(selectedGroup === "all" ? userGroups.flatMap(group => group.genre ? group.genre.split(',') : []).join(',') : selectedGroup);
     }
   };
 
@@ -279,12 +257,37 @@ export default function HomeScreen() {
           style={styles.picker}
           dropdownIconColor="gray"
         >
-          <Picker.Item label="Todos" value="all" />
+          <Picker.Item label="Todos os grupos" value="all" />
           {userGroups.map((group) => (
             <Picker.Item key={group.id} label={group.name} value={group.id} />
           ))}
         </Picker>
+        <HelpIcon />
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={helpModalVisible}
+        onRequestClose={() => {
+          setHelpModalVisible(!helpModalVisible);
+        }}
+      >
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>
+            Selecione um grupo para filtrar os filmes. Para ver filmes de todos os
+            grupos, selecione "Todos os grupos". Você precisa estar em pelo menos um grupo
+            para usar estes filtros.
+          </Text>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
+            onPress={() => setHelpModalVisible(!helpModalVisible)}
+          >
+            <Text style={styles.textStyle}>Fechar</Text>
+          </Pressable>
+        </View>
+      </Modal>
+
       <Animated.View
         {...panResponder.panHandlers}
         style={{
@@ -295,14 +298,14 @@ export default function HomeScreen() {
           justifyContent: "center",
         }}
       >
-        <MovieCard>
+        <MovieCard key={currentMovie.id}>
           <ImageRating>
-            <Banner source={{ uri: posterUrl }} resizeMode="stretch" />
+            <Banner source={{ uri: posterUrl }} resizeMode="contain" />
             <TitleContainer>
               <MovieTitle numberOfLines={2}>{currentMovie.title}</MovieTitle>
               <RatingContainer>
                 <FontAwesome name="imdb" size={24} color="white" />
-                <Description>{currentMovie.vote_average}</Description>
+                <Description>{parseFloat(currentMovie.vote_average).toFixed(1)}</Description>
               </RatingContainer>
             </TitleContainer>
           </ImageRating>
@@ -318,24 +321,59 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   pickerContainer: {
     padding: 10,
-    width: "90%", // Largura aumentada
+    width: "90%",
     alignSelf: "center",
-    borderRadius: 5,
-    marginBottom: 10, // Margem inferior (opcional)
+    borderRadius: 10, // Bordas arredondadas
+    borderWidth: 1,
+    borderColor: "#ccc",
+    marginBottom: 10,
+    flexDirection: "row", // Adiciona flexDirection para organizar o Picker e o ícone
+    justifyContent: "space-between", // Distribui espaço entre os elementos
+    alignItems: "center", // Alinha verticalmente
+  },
+  pickerRow: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   picker: {
-    backgroundColor: "#ddd", // Cinza claro
-    color: "black", // Letra preta
-    height: 40, // Altura levemente reduzida
-    fontSize: 18,
-  },
-  pickerItem: {
-    color: "black", // Letra preta nos itens
+    backgroundColor: "white",
+    flex: 1, // Permite que o picker ocupe o espaço disponível
+    borderRadius: 10, // Bordas arredondadas
+    color: "black",
+    height: 40,
     fontSize: 16,
+    paddingHorizontal: 10,
   },
-  loadingText: {
-    color: "black", // Letra preta no texto de carregamento
-    fontSize: 16,
+  // Estilos para o Modal
+  modalView: {
+    backgroundColor: "white",
+    margin: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
     textAlign: "center",
   },
 });
