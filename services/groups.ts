@@ -100,3 +100,21 @@ export const getGroupGenres = async (groupId: string): Promise<GroupGenresRespon
     throw error;
   }
 };
+
+interface FilmRankingResponse{
+  id: string,
+  title: string,
+  description: string,
+  votes: number;
+  genres: GenreResponse[]
+}
+
+export const generateFilmRanking = async (groupId: string): Promise<FilmRankingResponse[]> => {
+  try{
+    const response = await api.get(`/group/${groupId}/ranking`);
+    return response.data.ranking;
+  } catch(error) {
+    console.error(`Erro ao gerar ranking de filmes para o groupo ${groupId}`);
+    throw error;
+  }
+}

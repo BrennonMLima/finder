@@ -51,6 +51,7 @@ export default function RootLayout() {
           name="groupdetail/[id]"
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="/filmranking/[id]"/>
       </Stack>
     </ThemeProvider>
   );

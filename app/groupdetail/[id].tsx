@@ -134,6 +134,12 @@ export default function GroupDetailScreen() {
     setLeaveGroupConfirmVisible(false);
   };
 
+  const handleRankingPress = () =>{
+    const groupId = id;
+    router.push(`/filmranking?groupId=${groupId}`);
+
+  }
+
   if (error) {
     return <Texto>{error}</Texto>;
   }
@@ -212,15 +218,15 @@ export default function GroupDetailScreen() {
             </EventDate>
           </View>
         ) : (
-          <Texto>Nenhum evento disponí­vel</Texto>
+          <Texto>Nenhum evento disponï¿½ï¿½vel</Texto>
         )}
       </EventInfo>
-
-      <RankingBtn>
-        <StyledButtonShort>
-          <ButtonText>Ver Ranking de Filmes</ButtonText>
-        </StyledButtonShort>
-      </RankingBtn>
+      
+        <RankingBtn>
+          <StyledButtonShort onPress={()=> handleRankingPress()}>
+            <ButtonText>Ver Ranking de Filmes</ButtonText>
+          </StyledButtonShort>
+        </RankingBtn>
 
       <Footer>
         <Members>
