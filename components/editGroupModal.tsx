@@ -55,13 +55,13 @@ const EditGroupModal: React.FC<EditGroupModalProps> = ({
       await updateGroup(groupId, {
         name: groupName,
         description: groupDescription,
-        genreId: genreIds,
+        genreIds: genreIds,
       });
       onClose();
       Alert.alert("Sucesso", "Grupo atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar o grupo:", error);
-      Alert.alert("Erro", "N�o foi poss�vel atualizar o grupo.");
+      Alert.alert("Erro", "Não foi possível atualizar o grupo.");
     }
   };
 

@@ -53,16 +53,23 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
 
     const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
     if (!dateRegex.test(date)) {
-      Alert.alert("Erro", "Data inv�lida! Use o formato DD/MM/AAAA.");
+      Alert.alert("Erro", "Data inválida! Use o formato DD/MM/AAAA.");
       return;
     }
 
-    onCreate(name, location, date, description);
-    setName("");
-    setLocation("");
-    setDate("");
-    setDescription("");
-    onClose();
+    try {
+      const [day, month, year] = date.split("/").map(Number);
+      const isoDate = new Date(Date.UTC(year, month - 1, day)).toISOString();
+  
+      onCreate(name, location, isoDate, description);
+      setName("");
+      setLocation("");
+      setDate("");
+      setDescription("");
+      onClose();
+    } catch (error) {
+      Alert.alert("Erro", "Erro ao converter a data. Verifique o formato.");
+    }
   };
 
   return (

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, View, Pressable, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { getGroupById, getUsersInGroup, deleteGroup } from "@/services/groups";
+import { getGroupById, getUsersInGroup, deleteGroup, GenreResponse, getGenresInGroup} from "@/services/groups";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import {
@@ -47,6 +47,7 @@ export default function GroupDetailScreen() {
   const [leaveGroupConfirmVisible, setLeaveGroupConfirmVisible] = useState<boolean>(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editEventModalVisible, setEditEventModalVisible] = useState<boolean>(false);
+  const [groupGenres, setGroupGenres] = useState<GenreResponse[]>([]);
   useEffect(() => {
     const fetchGroupDetails = async () => {
       if (id) {
@@ -61,6 +62,9 @@ export default function GroupDetailScreen() {
           const Event = await getEventsByGroup(group.id);
           if (Event) {
             setEvent(Event);
+
+            const genresResponse = await getGenresInGroup(id as string);
+          setGroupGenres(genresResponse.genres || []);  
           }
         } catch (error) {
           setError("Erro ao carregar os detalhes do grupo.");
@@ -218,7 +222,7 @@ export default function GroupDetailScreen() {
             </EventDate>
           </View>
         ) : (
-          <Texto>Nenhum evento dispon��vel</Texto>
+          <Texto>Nenhum evento disponível</Texto>
         )}
       </EventInfo>
       
@@ -251,7 +255,7 @@ export default function GroupDetailScreen() {
       groupId={id as string}
       initialName={groupName}
       initialDescription={groupDescription}
-      initialGenres={[]}
+      initialGenres={groupGenres}
     />
 
       {/* Modal de confirmação para sair do grupo */}

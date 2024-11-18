@@ -77,12 +77,18 @@ export const getUsersInGroup = async (groupId: string) => {
   return await api.get(`/group/${groupId}/users`);
 };
 
-export const updateGroup = async (groupId: string, groupData: { name: string; description: string; genreId: number[] }) => {
+export const getGenresInGroup = async (groupId: string) => {
+  const response = await api.get(`/group/${groupId}/genres`);
+  return response.data;
+};
+
+
+export const updateGroup = async (groupId: string, groupData: { name: string; description: string; genreIds: number[] }) => {
     const response = await api.put(`/group/${groupId}/`, groupData);
     return response.data;
 };
 
-interface GenreResponse {
+export interface GenreResponse {
   id: number;
   name: string;
 }

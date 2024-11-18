@@ -300,7 +300,7 @@ export default function HomeScreen() {
       >
         <MovieCard key={currentMovie.id}>
           <ImageRating>
-            <Banner source={{ uri: posterUrl }} resizeMode="contain" />
+            <Banner source={{ uri: posterUrl }} resizeMode="stretch" />
             <TitleContainer>
               <MovieTitle numberOfLines={2}>{currentMovie.title}</MovieTitle>
               <RatingContainer>

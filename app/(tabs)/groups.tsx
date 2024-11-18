@@ -29,7 +29,6 @@ export default function GroupScreen() {
   const fetchGroupsAndUsers = async () => {
     try {
       const response = await getUserGroups();
-      console.log("resposta", response);
       const groups = response.data;
 
       const groupsWithDetails = await Promise.all(

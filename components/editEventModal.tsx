@@ -38,25 +38,57 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
   initialDate,
   initialDescription,
 }) => {
+  const formatToDDMMYYYY = (isoDate: string) => {
+    const date = new Date(isoDate);
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const year = date.getUTCFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  const formatToISO = (date: string) => {
+    const [day, month, year] = date.split("/").map(Number);
+    return new Date(Date.UTC(year, month - 1, day)).toISOString();
+  };
   const [name, setName] = useState(initialName);
   const [location, setLocation] = useState(initialLocation);
-  const [date, setDate] = useState(initialDate);
+  const [date, setDate] = useState(formatToDDMMYYYY(initialDate));
   const [description, setDescription] = useState(initialDescription);
 
   useEffect(() => {
     setName(initialName);
     setLocation(initialLocation);
-    setDate(initialDate);
+    setDate(formatToDDMMYYYY(initialDate));
     setDescription(initialDescription);
   }, [initialName, initialLocation, initialDate, initialDescription]);
 
+  const handleDateChange = (text: string) => {
+    let formattedText = text.replace(/[^0-9]/g, "");
+
+    if (formattedText.length > 2) {
+      formattedText = `${formattedText.slice(0, 2)}/${formattedText.slice(2)}`;
+    }
+    if (formattedText.length > 5) {
+      formattedText = `${formattedText.slice(0, 5)}/${formattedText.slice(5, 9)}`;
+    }
+
+    setDate(formattedText.slice(0, 10));
+  };
+  
+  
   const handleEdit = () => {
     if (!name || !location || !date || !description) {
       Alert.alert("Erro", "Todos os campos são obrigatórios!");
       return;
     }
-
-    onEdit(eventId, name, location, date, description);
+    
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (!dateRegex.test(date)) {
+      Alert.alert("Erro", "Data inválida! Use o formato DD/MM/AAAA.");
+      return;
+    }
+    const isoDate = formatToISO(date);
+    onEdit(eventId, name, location, isoDate, description);
     onClose();
   };
 
@@ -75,7 +107,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
           <StyledInput
             placeholder="Data"
             value={date}
-            onChangeText={setDate}
+            onChangeText={handleDateChange}
             keyboardType="numeric"
           />
           <StyledInput
