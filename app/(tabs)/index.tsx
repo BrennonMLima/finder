@@ -45,6 +45,7 @@ export default function HomeScreen() {
   const [loadingGroups, setLoadingGroups] = useState(true);
   const position = React.useRef(new Animated.ValueXY()).current;
   const [helpModalVisible, setHelpModalVisible] = useState(false);
+  const [isLoadingMovies, setIsLoadingMovies] = useState(true);
 
   const HelpIcon = () => (
     <Pressable onPress={() => setHelpModalVisible(true)}>
@@ -118,6 +119,7 @@ export default function HomeScreen() {
     const url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&language=pt-BR${genresParam}&sort_by=popularity.desc&page=${newPage}`;
 
     try {
+      setIsLoadingMovies(true);
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`Erro ao carregar filmes: ${response.status}`);
@@ -127,6 +129,8 @@ export default function HomeScreen() {
     } catch (error) {
       console.error("Erro ao buscar filmes:", error);
       setMovies([]);
+    }finally {
+      setIsLoadingMovies(false); // Conclui o carregamento
     }
   };
 
@@ -240,6 +244,14 @@ export default function HomeScreen() {
     );
   }
 
+  if (isLoadingMovies) {
+    return (
+      <Container>
+        <Text>Carregando filmes...</Text>
+      </Container>
+    );
+  }
+
   const posterUrl = `https://image.tmdb.org/t/p/w500${currentMovie.poster_path}`;
 
   const rotate = position.x.interpolate({
@@ -298,7 +310,7 @@ export default function HomeScreen() {
           justifyContent: "center",
         }}
       >
-        <MovieCard key={currentMovie.id}>
+        <MovieCard>
           <ImageRating>
             <Banner source={{ uri: posterUrl }} resizeMode="stretch" />
             <TitleContainer>

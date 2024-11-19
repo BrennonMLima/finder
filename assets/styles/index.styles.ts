@@ -14,7 +14,6 @@ export const Banner = styled.Image`
 `;
 
 export const ImageRating = styled.View`
-  width: 100%;
   height: 70%;
   position: relative;
 `;
