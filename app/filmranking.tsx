@@ -5,36 +5,50 @@ import {
     FilmTitle,
     Votes,
     ImageFilm,
-    FilmInfo
+    FilmInfo,
+    HighlightedFilmCard,
 } from "@/assets/styles/filmraking.styles";
-import { Text, ScrollView, View, Image } from "react-native";
+import { Text, ScrollView, View } from "react-native";
 import { generateFilmRanking } from "@/services/groups";
 import { useLocalSearchParams } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
 
-interface Genre{
+const API_KEY = "30feaffc6e5c122072bd41275477c810";
+const BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+
+interface Genre {
     id: number;
     name: string;
 }
-interface FilmRankingResponse{
-    id: string,
-    title: string,
-    description: string,
+
+interface FilmRankingResponse {
+    id: string;
+    title: string;
+    description: string;
     votes: number;
     genres: Genre[];
+    posterPath?: string;
 }
 
-export default function FilmsRankingScreen(){
+export default function FilmsRankingScreen() {
     const { groupId } = useLocalSearchParams();
     const [ranking, setRanking] = useState<FilmRankingResponse[]>([]);
     const [error, setError] = useState<string | null>(null);
-    //const [loading, setLoading] = useState<boolean>(true);
-    
+
     useEffect(() => {
         const fetchRanking = async () => {
-            try{
+            try {
                 const rankingData = await generateFilmRanking(groupId as string);
-                setRanking(rankingData);
-            } catch(error){
+
+                const updatedRanking = await Promise.all(
+                    rankingData.map(async (film) => {
+                        const posterPath = await fetchPosterPath(film.id);
+                        return { ...film, posterPath };
+                    })
+                );
+
+                setRanking(updatedRanking);
+            } catch (error) {
                 setError("Erro ao carregar o ranking de filmes");
                 console.error(error);
             }
@@ -43,32 +57,53 @@ export default function FilmsRankingScreen(){
         fetchRanking();
     }, [groupId]);
 
-    if(error){
-        return(
-            <Text>{error}</Text>
-        )
+    const fetchPosterPath = async (movieId: string): Promise<string | undefined> => {
+        try {
+            const response = await fetch(
+                `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}`
+            );
+            const data = await response.json();
+            return data.poster_path ? `${BASE_IMAGE_URL}${data.poster_path}` : undefined;
+        } catch (error) {
+            console.error("Erro ao buscar o poster do filme:", error);
+            return undefined;
+        }
+    };
+
+    if (error) {
+        return <Text>{error}</Text>;
     }
-    return(
+
+    return (
         <ScrollView
             contentContainerStyle={{
                 padding: 20,
-                backgroundColor:"#262626",
-                flexGrow:1
+                backgroundColor: "#262626",
+                flexGrow: 1,
             }}
         >
             <View>
                 <Title>Ranking de Filmes</Title>
             </View>
-            {ranking.map((film, index) =>(
-                <FilmCard key ={film.id}>
-                    <ImageFilm source={require("@/assets/images/favicon.png")}></ImageFilm>
-                    <FilmInfo>
-                        <FilmTitle>{`${index + 1}º - ${film.title}`}</FilmTitle>
-                        <Votes>{`${film.votes} votos`}</Votes>
-                    </FilmInfo>
-                </FilmCard>
-            ))}
-
+            {ranking.map((film, index) => {
+                const FilmCardComponent = index === 0 ? HighlightedFilmCard : FilmCard;
+                return (
+                    <FilmCardComponent key={film.id}>
+                        <ImageFilm
+                            source={
+                                film.posterPath
+                                    ? { uri: film.posterPath }
+                                    : require("@/assets/images/favicon.png")
+                            }
+                        />
+                        <FilmInfo>
+                            <FilmTitle>{`${index + 1}º - ${film.title}`}</FilmTitle>
+                            <Votes>{`${film.votes} votos`}</Votes>
+                        </FilmInfo>
+                            <MaterialIcons name="chevron-right" size={24} color="#fff" />
+                    </FilmCardComponent>
+                );
+            })}
         </ScrollView>
-    )
+    );
 }
