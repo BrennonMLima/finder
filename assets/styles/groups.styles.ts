@@ -58,3 +58,28 @@ export const DateContainer = styled.View`
   display: flex;
   gap: 0;
 `
+
+export const EnterGroupButton = styled.Pressable`
+  background-color: #262626;
+  padding: 10px 5px;
+  border-radius: 8px;
+  display: flex;
+  align-self: flex-start;
+  width: 40%;
+  border-width: 1px;
+  borderColor: #fff;
+`;
+
+export const ButtonTextEnter = styled.Text`
+  color: #fff;
+  text-align: center;
+  font-size: ${RFValue(10)}px;
+`;
+
+export const HeaderGroup = styled.View`
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between; 
+  align-items: center; 
+  margin-top: 25px;
+`;

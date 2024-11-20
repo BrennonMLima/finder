@@ -13,14 +13,19 @@ import {
   GroupDetails,
   HeaderText,
   DateContainer,
+  EnterGroupButton,
+  ButtonTextEnter,
+  HeaderGroup
 } from "@/assets/styles/groups.styles";
 import CreateGroupModal from "../../components/createGroupModal";
+import EnterGroupModal from "@/components/enterGroupModal";
 import { getUserGroups } from "@/services/users";
 import { EventDate, Texto } from "@/assets/styles/groupdetail.styles";
 import { Feather } from "@expo/vector-icons";
 
 export default function GroupScreen() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [enterGroupVisible, setEnterGroupVisible] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
   const [error, setError] = useState("");
 
@@ -74,10 +79,15 @@ export default function GroupScreen() {
   return (
     <Container>
       <Header>
-        <NewGroupButton onPress={() => setModalVisible(true)}>
-          <ButtonText>+ Novo Grupo</ButtonText>
-        </NewGroupButton>
-        <HeaderText>Seus Grupos</HeaderText>
+          <NewGroupButton onPress={() => setModalVisible(true)}>
+            <ButtonText>+ Novo Grupo</ButtonText>
+          </NewGroupButton>
+          <HeaderGroup>
+            <HeaderText>Seus Grupos</HeaderText>
+            <EnterGroupButton onPress={() => setEnterGroupVisible(true)}>
+              <ButtonTextEnter>Entrar em um Grupo</ButtonTextEnter>
+            </EnterGroupButton>
+          </HeaderGroup>
       </Header>
 
       <ScrollView
@@ -112,6 +122,12 @@ export default function GroupScreen() {
         onClose={() => setModalVisible(false)}
         onGroupCreated={fetchGroupsAndUsers}
       />
+
+      <EnterGroupModal
+        visible={enterGroupVisible}
+        onClose={() => setEnterGroupVisible(false)}
+        onEnterGroup={fetchGroupsAndUsers}
+        />
     </Container>
   );
 }

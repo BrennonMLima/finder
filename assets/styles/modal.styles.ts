@@ -46,6 +46,18 @@ export const TagText = styled.Text`
   font-weight: bold;
 `;
 
+export const TextInput = styled.TextInput`
+  width: 100%;
+  height: 50px;
+  background-color: #eee;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  padding-horizontal: 10px;
+  font-size: 30px;
+  text-align: center;
+  font-width: bold;
+`
+
 export const DataList = styled.FlatList`
 
 `

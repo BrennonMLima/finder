@@ -33,6 +33,7 @@ import {
 import ConfirmationModal from "../../components/confirmationModal";
 import EditGroupModal from "@/components/editGroupModal";
 import EditEventModal from "@/components/editEventModal";
+import GenerateCodeModal from "@/components/generateCodeModal";
 
 export default function GroupDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -44,6 +45,7 @@ export default function GroupDetailScreen() {
   const [error, setError] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
+  const [generateCodeVisible, setGenerateCodeVisible] = useState(false);
   const [leaveGroupConfirmVisible, setLeaveGroupConfirmVisible] = useState<boolean>(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editEventModalVisible, setEditEventModalVisible] = useState<boolean>(false);
@@ -235,7 +237,9 @@ export default function GroupDetailScreen() {
       <Footer>
         <Members>
           <Texto style={{ fontSize: 18 }}>Membros: {members.length}</Texto>
-          <Texto>+ Convidar via link</Texto>
+          <Pressable onPress={() => setGenerateCodeVisible(true)}>
+            <Texto>+ Gerar código de convite</Texto>
+          </Pressable>
           {members.map((member, index) => (
             <Texto key={index}>{member}</Texto>
           ))}
@@ -277,6 +281,11 @@ export default function GroupDetailScreen() {
           initialLocation={event?.location || ""}
           initialDate={event?.date || ""}
           initialDescription={event?.description || ""}
+      />
+
+      <GenerateCodeModal
+          visible={generateCodeVisible}
+          onClose={() => setGenerateCodeVisible(false)}
       />
     </ScrollView>
   );
