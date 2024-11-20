@@ -125,12 +125,13 @@ export default function HomeScreen() {
         throw new Error(`Erro ao carregar filmes: ${response.status}`);
       }
       const data = await response.json();
+      console.log("dataadasdasdas",data)
       setMovies(data.results);
     } catch (error) {
       console.error("Erro ao buscar filmes:", error);
       setMovies([]);
     }finally {
-      setIsLoadingMovies(false); // Conclui o carregamento
+      setIsLoadingMovies(false);
     }
   };
 
@@ -161,8 +162,16 @@ export default function HomeScreen() {
   };
 
   const handleSwipe = async (direction: string) => {
-    const nextIndex = currentIndex + 1;
-
+    var nextIndex = currentIndex + 1;
+    while(nextIndex < movies.length-1){
+      if (movies[nextIndex].overview == "")
+      {
+        nextIndex++;
+        console.log('pulou',nextIndex)
+      }
+      else
+        break;
+    }
     if (direction === "right" && currentMovie) {
       try {
         const isVoted = true;
