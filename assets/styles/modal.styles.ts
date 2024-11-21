@@ -105,3 +105,17 @@ export const EditIconContainer = styled.Pressable`
   justify-content: center;
 `;
 
+export const TextContent = styled.Text`
+    color: #b2b2b2;
+    font-size: 22px;
+    font-weight: bold;
+    margin-left: 4px;
+`;
+
+export const Copy = styled.Text`
+  flex-direction: row;
+  gap: 20px;
+`;
+
+
+

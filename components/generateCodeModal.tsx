@@ -3,11 +3,14 @@ import { Modal} from "react-native";
 import {
     Overlay,
     ModalWrapper,
-    TextInput
+    TextInput,
+    TextContent,
+    Copy
   } from "@/assets/styles/modal.styles";
   import {
     Title
   } from "@/assets/styles/global.styles";
+import { Feather } from "@expo/vector-icons";
 
 interface GenerateCodeModalProps {
   visible: boolean;
@@ -33,6 +36,14 @@ const GenerateCodeModal: React.FC<GenerateCodeModalProps> = ({
             editable={false}
             selectTextOnFocus={true}
           />
+          <Copy>
+            <Feather
+              name="copy"
+              color="#b2b2b2"
+              size={20}
+              />
+              <TextContent>Copiar</TextContent>
+            </Copy>
         </ModalWrapper>
       </Overlay>
     </Modal>
