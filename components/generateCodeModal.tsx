@@ -5,7 +5,8 @@ import {
     ModalWrapper,
     TextInput,
     TextContent,
-    Copy
+    Copy,
+    StyledInputContainer,
   } from "@/assets/styles/modal.styles";
   import {
     Title
@@ -31,19 +32,14 @@ const GenerateCodeModal: React.FC<GenerateCodeModalProps> = ({
       <Overlay onPress={onClose}>
         <ModalWrapper>
           <Title>Código do convite:</Title>
+          <StyledInputContainer>
           <TextInput
             value="Law24"
             editable={false}
             selectTextOnFocus={true}
-          />
-          <Copy>
-            <Feather
-              name="copy"
-              color="#b2b2b2"
-              size={20}
-              />
-              <TextContent>Copiar</TextContent>
-            </Copy>
+            />
+            <Feather name="copy" size={20} color="black"/>
+          </StyledInputContainer>
         </ModalWrapper>
       </Overlay>
     </Modal>

@@ -52,7 +52,8 @@ export const TextInput = styled.TextInput`
   height: 50px;
   background-color: #eee;
   border-radius: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  margin-top: 5px;
   padding-horizontal: 10px;
   font-size: 30px;
   text-align: center;
@@ -109,12 +110,21 @@ export const TextContent = styled.Text`
     color: #b2b2b2;
     font-size: 22px;
     font-weight: bold;
-    margin-left: 4px;
+    margin-left: 5px;
 `;
 
 export const Copy = styled.Text`
   flex-direction: row;
   gap: 20px;
+`;
+
+export const StyledInputContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  background-color: #eee;
+  border-radius: 10px;
+  padding: 0 12px;
+  width: 100%;
 `;
 
 
