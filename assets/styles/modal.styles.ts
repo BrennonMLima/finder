@@ -1,4 +1,5 @@
 import styled from "styled-components/native";
+import { Feather } from '@expo/vector-icons';
 
 export const Overlay = styled.Pressable`
   flex: 1;
@@ -61,3 +62,46 @@ export const TextInput = styled.TextInput`
 export const DataList = styled.FlatList`
 
 `
+
+export const EditProfile = styled.View`
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 30px;
+`
+
+export const EditableImage = styled.Image`
+  width: 100%;
+  height: 100%;
+`;
+
+export const EditModalWrapper = styled.Pressable`
+  width: 95%;
+  background-color: #333;
+  border-radius: 10px;
+  padding: 20px;
+  align-items: center;
+`;
+
+export const ImageContainer = styled.View`
+  position: relative;
+  width: 120px;
+  height: 120px;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+  border-radius: 60px;
+  overflow: hidden;
+`;
+
+export const EditIconContainer = styled.Pressable`
+  width: 100%;
+  height: 100%;
+  position: absolute; 
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  padding: 8px;
+  align-items: center;
+  justify-content: center;
+`;
+

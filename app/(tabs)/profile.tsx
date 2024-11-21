@@ -23,6 +23,7 @@ import {
   SettingsIconWrapper,
 } from "@/assets/styles/global.styles";
 import ConfirmationModal from "../../components/confirmationModal";
+import EditProfileModal from "@/components/editProfileModal";
 
 export default function ProfileScreen() {
   const [error, setError] = useState("");
@@ -30,6 +31,7 @@ export default function ProfileScreen() {
   const [user, setUser] = useState<User | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [logoutConfirmVisible, setLogoutConfirmVisible] = useState(false);
+  const [editProfileVisible, setEditProfileVisible] = useState(false);
 
   const fetchUser = async () => {
     try {
@@ -63,6 +65,7 @@ export default function ProfileScreen() {
 
   const handleEditProfile = () => {
     setMenuVisible(false);
+    setEditProfileVisible(true);
   };
 
   const confirmLogout = () => {
@@ -114,6 +117,11 @@ export default function ProfileScreen() {
         title="Tem certeza de que deseja sair?"
         confirmText="Sair"
         cancelText="Cancelar"
+      />
+
+      <EditProfileModal
+        visible={editProfileVisible}
+        onClose={() => setEditProfileVisible(false)}
       />
     </Container>
   );

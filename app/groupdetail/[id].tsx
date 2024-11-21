@@ -35,6 +35,7 @@ import EditGroupModal from "@/components/editGroupModal";
 import EditEventModal from "@/components/editEventModal";
 import GenerateCodeModal from "@/components/generateCodeModal";
 
+
 export default function GroupDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
@@ -287,6 +288,7 @@ export default function GroupDetailScreen() {
           visible={generateCodeVisible}
           onClose={() => setGenerateCodeVisible(false)}
       />
+
     </ScrollView>
   );
 }
