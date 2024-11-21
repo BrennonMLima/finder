@@ -56,10 +56,8 @@ export default function HomeScreen() {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        console.log("Buscando grupos...");
         const response = await getUserGroups();
         if (response.data && response.data) {
-          console.log("Grupos encontrados:", response.data);
           setUserGroups(response.data);
         } else {
           console.error(
@@ -77,7 +75,7 @@ export default function HomeScreen() {
     fetchGroups();
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { 
     const fetchGenresAndMovies = async () => {
       setLoading(true);
       try {
@@ -87,9 +85,11 @@ export default function HomeScreen() {
             group.genre ? group.genre.split(",").map(Number) : []
           );
           genreIds = allGenreIds.join(",");
+          console.log("genreIds da linha 87: ",genreIds)
         } else {
           const genresResult = await getGroupGenres(selectedGroup);
-          genreIds = genresResult.genres.map((genre) => genre.id).join(",");
+          genreIds = genresResult.genres.map((genre) => genre.id).join("|");
+          console.log("genreIds da linha 90: ",genreIds)
         }
         fetchMovies(genreIds);
       } catch (error) {
@@ -103,37 +103,42 @@ export default function HomeScreen() {
     fetchGenresAndMovies();
   }, [selectedGroup, userGroups]);
 
-  const fetchMovies = async (genreIds = "") => {
-    const maxPages = 400;
-    let newPage;
+const fetchMovies = async (genreIds = "") => {
+  const maxPages = 100;
+  let newPage;
 
-    do {
-      newPage = Math.floor(Math.random() * maxPages) + 1;
-    } while (visitedPages.includes(newPage));
+  // Gera uma página aleatória que ainda não foi visitada
+  do {
+    newPage = Math.floor(Math.random() * maxPages) + 1;
+  } while (visitedPages.includes(newPage));
 
+  setVisitedPages([...visitedPages, newPage]);
 
-    setVisitedPages([...visitedPages, newPage]);
+  const genresParam = genreIds ? `&with_genres=${genreIds}` : "";
+  const url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&language=pt-BR${genresParam}&sort_by=popularity.desc&page=${newPage}`;
 
-    const genresParam = genreIds ? `&with_genres=${genreIds}` : "";
-    
-    const url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&language=pt-BR${genresParam}&sort_by=popularity.desc&page=${newPage}`;
+  try {
+    setIsLoadingMovies(true);
 
-    try {
-      setIsLoadingMovies(true);
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Erro ao carregar filmes: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log("dataadasdasdas",data)
-      setMovies(data.results);
-    } catch (error) {
-      console.error("Erro ao buscar filmes:", error);
-      setMovies([]);
-    }finally {
-      setIsLoadingMovies(false);
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Erro ao carregar filmes: ${response.status}`);
     }
-  };
+
+    const data = await response.json();
+
+    // Filtra os filmes com overview vazio
+    const validMovies = data.results.filter((movie: { overview: string; }) => movie.overview && movie.overview.trim() !== "");
+
+
+    setMovies(validMovies); // Atualiza o estado apenas com filmes válidos
+  } catch (error) {
+    console.error("Erro ao buscar filmes:", error);
+    setMovies([]); // Reseta os filmes em caso de erro
+  } finally {
+    setIsLoadingMovies(false); // Marca como não carregando
+  }
+};
 
   const fetchGenresForCurrentMovie = async (movieId: number) => {
     try {
@@ -149,7 +154,6 @@ export default function HomeScreen() {
       const data = await response.json();
 
       if (data.genres) {
-        console.log(data.genres);
         return data.genres;
       } else {
         console.error("Resultado inválido ao tentar pegar gêneros");
@@ -161,51 +165,45 @@ export default function HomeScreen() {
     }
   };
 
-  const handleSwipe = async (direction: string) => {
-    var nextIndex = currentIndex + 1;
-    while(nextIndex < movies.length-1){
-      if (movies[nextIndex].overview == "")
-      {
-        nextIndex++;
-        console.log('pulou',nextIndex)
-      }
-      else
-        break;
-    }
-    if (direction === "right" && currentMovie) {
-      try {
-        const isVoted = true;
-        const genres = await fetchGenresForCurrentMovie(currentMovie.id);
-        const genreIds = genres.map((genre: Genre) => genre.id);
-        console.log("ids do genreIds: ", genreIds);
-        await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted, genreIds)
-        console.log("Filme salvo com sucesso:", currentMovie.title, " ID: ", currentMovie.id);
-        console.log("Generos do filme: ", genreIds);
-      } catch (error) {
-        console.error("Erro ao salvar filme:", error);
-      }
-    }
+const handleSwipe = async (direction: string) => {
+  let nextIndex = currentIndex + 1;
 
-    if (direction === "left" && currentMovie) {
-      try {
-        const isVoted = false;
-        const genres = await fetchGenresForCurrentMovie(currentMovie.id);
-        const genreIds = genres.map((genre: Genre) => genre.id);
-        await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted, genreIds)
-        console.log("Filme salvo com sucesso:", currentMovie.title, " ID: ", currentMovie.id);
-        console.log("Generos do filme: ", genreIds);
-      } catch (error) {
-        console.error("Erro ao salvar filme:", error);
-      }
-    }
+  // Verifica se chegou ao final da lista atual
+  if (nextIndex >= movies.length) {
+    await fetchMovies(selectedGroup === "all" 
+      ? userGroups.flatMap(group => group.genre ? group.genre.split(",") : []).join("|") 
+      : selectedGroup
+    );
+    nextIndex = 0; // Reinicia o índice após carregar novos filmes
+  }
 
-    if (nextIndex < movies.length) { // Verifica se há mais filmes antes de chamar fetchMovies
-      setCurrentIndex(nextIndex);
-      position.x.setValue(0);
-    } else if (movies.length > 0) { // Verifica se há filmes antes de chamar fetchMovies
-      fetchMovies(selectedGroup === "all" ? userGroups.flatMap(group => group.genre ? group.genre.split(',') : []).join(',') : selectedGroup);
+  // Atualiza o índice e reseta a posição do card
+  setCurrentIndex(nextIndex);
+  position.x.setValue(0);
+
+  // Lógica adicional para salvar ou descartar filmes
+  if (direction === "right" && currentMovie) {
+    try {
+      const isVoted = true;
+      const genres = await fetchGenresForCurrentMovie(currentMovie.id);
+      const genreIds = genres.map((genre: Genre) => genre.id);
+      console.log("genreIds da linha 187: ",genreIds)
+      await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted, genreIds);
+    } catch (error) {
+      console.error("Erro ao salvar filme:", error);
     }
-  };
+  } else if (direction === "left" && currentMovie) {
+    try {
+      const isVoted = false;
+      const genres = await fetchGenresForCurrentMovie(currentMovie.id);
+      const genreIds = genres.map((genre: Genre) => genre.id);
+      console.log("genreIds da linha 197: ",genreIds)
+      await addFilm(currentMovie.id, currentMovie.title, currentMovie.overview, isVoted, genreIds);
+    } catch (error) {
+      console.error("Erro ao descartar filme:", error);
+    }
+  }
+};
 
   const panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => true,
