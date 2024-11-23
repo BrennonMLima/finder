@@ -8,20 +8,23 @@ import {
     FilmInfo,
     HighlightedFilmCard,
 } from "@/assets/styles/filmraking.styles";
-import { Text, ScrollView, View } from "react-native";
+import { Text, ScrollView, View, Pressable } from "react-native";
 import { generateFilmRanking } from "@/services/groups";
 import { useLocalSearchParams } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
+import ConfirmationWatched from "@/components/confirmationWatched";
+import { markAsWatched } from "@/services/films";
+import { getUserFromToken } from "@/services/users";
 
 const API_KEY = "30feaffc6e5c122072bd41275477c810";
-const BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+export const BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
 
 interface Genre {
     id: number;
     name: string;
 }
 
-interface FilmRankingResponse {
+export interface FilmRankingResponse {
     id: string;
     title: string;
     description: string;
@@ -34,6 +37,8 @@ export default function FilmsRankingScreen() {
     const { groupId } = useLocalSearchParams();
     const [ranking, setRanking] = useState<FilmRankingResponse[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedFilm, setSelectedFilm] = useState<FilmRankingResponse | null>(null);
 
     useEffect(() => {
         const fetchRanking = async () => {
@@ -74,6 +79,39 @@ export default function FilmsRankingScreen() {
         return <Text>{error}</Text>;
     }
 
+    const handleMarkAsWatched = async (filmId: string, watched: boolean) => { // Adiciona 'watched'
+        try {
+            if (!groupId) {
+                console.error("FilmRanking - groupId não definido");
+                return;
+            }
+    
+            const user = await getUserFromToken();
+            if (!user) {
+                console.error("FilmRanking - Usuário não encontrado no token");
+                return;
+            }
+    
+            if (watched) { // Chama markAsWatched apenas se o checkbox estiver marcado
+              const response = await markAsWatched(user.id, filmId, groupId as string); // Usa nome diferente para evitar conflito
+    
+              if (!response || response.message !== "Filme marcado como assistido") {
+                console.error("FilmRanking - Resposta inesperada do servidor:", response);
+                // Trate o erro como preferir (ex: exibir mensagem no modal)
+                return; // Impede a remoção do filme do ranking em caso de erro
+              }
+            }
+    
+            setRanking(ranking.filter(film => film.id !== filmId)); // Remove o filme do ranking
+    
+        } catch (error) {
+            console.error("FilmRanking - Erro ao marcar como assistido:", error);
+            // Trate o erro como preferir
+        } finally {
+          setModalVisible(false); // Fecha o modal independente do sucesso ou erro
+        }
+    };
+
     return (
         <ScrollView
             contentContainerStyle={{
@@ -88,6 +126,7 @@ export default function FilmsRankingScreen() {
             {ranking.map((film, index) => {
                 const FilmCardComponent = index === 0 ? HighlightedFilmCard : FilmCard;
                 return (
+                <Pressable onPress={() => { setSelectedFilm(film); setModalVisible(true); }}>
                     <FilmCardComponent key={film.id}>
                         <ImageFilm
                             source={
@@ -100,10 +139,17 @@ export default function FilmsRankingScreen() {
                             <FilmTitle>{`${index + 1}º - ${film.title}`}</FilmTitle>
                             <Votes>{`${film.votes} votos`}</Votes>
                         </FilmInfo>
-                            <MaterialIcons name="chevron-right" size={24} color="#fff" />
+                    <MaterialIcons name="chevron-right" size={24} color="#fff" />
                     </FilmCardComponent>
+                </Pressable>
                 );
             })}
+            <ConfirmationWatched
+            visible={modalVisible}
+            film={selectedFilm}
+            onClose={() => { setModalVisible(false); setSelectedFilm(null); }}
+            onConfirm={handleMarkAsWatched}
+          />
         </ScrollView>
     );
 }

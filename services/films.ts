@@ -35,3 +35,15 @@ export const addFilm = async (id: string, title: string, description: string, is
         throw error;
     }
 }
+
+export const markAsWatched = async (userId: string, filmId: string, groupId: string) => {
+    try {
+        const url = `/films/${filmId}/watched`;
+        const data = { userId, groupId }; 
+        const response = await api.post(url, data); 
+        return response.data;
+
+    } catch (error) {  
+        console.error("Erro ao marcar cmomo assistido:", error);
+    }
+};
