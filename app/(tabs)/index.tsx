@@ -21,6 +21,7 @@ import {
   TitleContainer,
   DescriptionWrapper,
   MovieCard,
+  TitleMovieContaier,
 } from "../../assets/styles/index.styles";
 import { Group, getGroupGenres } from "@/services/groups";
 import { getUserGroups } from "@/services/users";
@@ -168,20 +169,25 @@ const fetchMovies = async (genreIds = "") => {
 const handleSwipe = async (direction: string) => {
   let nextIndex = currentIndex + 1;
 
-  // Verifica se chegou ao final da lista atual
   if (nextIndex >= movies.length) {
-    await fetchMovies(selectedGroup === "all" 
-      ? userGroups.flatMap(group => group.genre ? group.genre.split(",") : []).join("|") 
-      : selectedGroup
-    );
-    nextIndex = 0; // Reinicia o índice após carregar novos filmes
-  }
+    let genresToFetch: string;
 
-  // Atualiza o índice e reseta a posição do card
+    if (selectedGroup === "all") 
+      genresToFetch = "";
+
+    else {
+      const genreResponse = await getGroupGenres(selectedGroup);
+      genresToFetch = genreResponse.genres.map(genre => genre.id).join("|");
+    }
+
+    await fetchMovies(genresToFetch);
+
+    nextIndex = 0;
+}
+
   setCurrentIndex(nextIndex);
   position.x.setValue(0);
 
-  // Lógica adicional para salvar ou descartar filmes
   if (direction === "right" && currentMovie) {
     try {
       const isVoted = true;
@@ -276,7 +282,7 @@ const handleSwipe = async (direction: string) => {
           style={styles.picker}
           dropdownIconColor="gray"
         >
-          <Picker.Item label="Todos os grupos" value="all" />
+          <Picker.Item label="Todos os gêneros" value="all" />
           {userGroups.map((group) => (
             <Picker.Item key={group.id} label={group.name} value={group.id} />
           ))}
@@ -321,7 +327,9 @@ const handleSwipe = async (direction: string) => {
           <ImageRating>
             <Banner source={{ uri: posterUrl }} resizeMode="stretch" />
             <TitleContainer>
+              <TitleMovieContaier>
               <MovieTitle numberOfLines={2}>{currentMovie.title}</MovieTitle>
+              </TitleMovieContaier>
               <RatingContainer>
                 <FontAwesome name="imdb" size={24} color="white" />
                 <Description>{parseFloat(currentMovie.vote_average).toFixed(1)}</Description>
@@ -396,3 +404,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+

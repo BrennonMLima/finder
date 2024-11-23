@@ -27,9 +27,12 @@ export const TitleContainer = styled.View`
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
-  gap: 15px;
+  gap: 10px;
 `;
 
+export const TitleMovieContaier = styled.View` 
+  width: 82%;
+`
 export const MovieTitle = styled.Text`
   font-size: ${RFValue(20)}px;
   color: #ddd;
