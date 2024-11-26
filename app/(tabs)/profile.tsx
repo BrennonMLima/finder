@@ -99,7 +99,7 @@ export default function ProfileScreen() {
         </MenuContainer>
       )}
       <Content>
-        <ProfileImage source={require("@/assets/images/profile.png")} />
+        <ProfileImage source={require("@/assets/images/pantera.jpg")} />
         {user ? (
           <Nickname>{user.name}</Nickname>
         ) : (
