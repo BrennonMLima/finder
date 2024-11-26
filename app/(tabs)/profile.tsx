@@ -76,6 +76,10 @@ export default function ProfileScreen() {
     setLogoutConfirmVisible(false);
   };
 
+  const navigateToRateFilms = () => {
+    router.push("/ratefilms"); // Redireciona para a tela de avaliar filmes
+  };
+
   return (
     <Container>
       <SettingsIconWrapper onPress={toggleMenu}>
@@ -106,7 +110,7 @@ export default function ProfileScreen() {
           <Nickname>Carregando...</Nickname>
         )}
         <Links>Seja Premium *</Links>
-        <Links>Avaliar Filmes</Links>
+        <Links onPress={navigateToRateFilms}>Avaliar Filmes</Links>
       </Content>
 
       {/* Modal de confirmação de logout usando o componente reutilizável */}

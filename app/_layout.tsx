@@ -52,6 +52,7 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="/filmranking/[id]"/>
+        <Stack.Screen name="ratefilms"/>
       </Stack>
     </ThemeProvider>
   );

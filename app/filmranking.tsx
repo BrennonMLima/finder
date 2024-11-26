@@ -79,7 +79,7 @@ export default function FilmsRankingScreen() {
         return <Text>{error}</Text>;
     }
 
-    const handleMarkAsWatched = async (filmId: string, watched: boolean) => { // Adiciona 'watched'
+    const handleMarkAsWatched = async (filmId: string, watched: boolean) => {
         try {
             if (!groupId) {
                 console.error("FilmRanking - groupId não definido");
@@ -92,23 +92,21 @@ export default function FilmsRankingScreen() {
                 return;
             }
     
-            if (watched) { // Chama markAsWatched apenas se o checkbox estiver marcado
-              const response = await markAsWatched(user.id, filmId, groupId as string); // Usa nome diferente para evitar conflito
+            if (watched) {
+              const response = await markAsWatched(user.id, filmId, groupId as string);
     
               if (!response || response.message !== "Filme marcado como assistido") {
                 console.error("FilmRanking - Resposta inesperada do servidor:", response);
-                // Trate o erro como preferir (ex: exibir mensagem no modal)
-                return; // Impede a remoção do filme do ranking em caso de erro
+                return;
               }
             }
     
-            setRanking(ranking.filter(film => film.id !== filmId)); // Remove o filme do ranking
+            setRanking(ranking.filter(film => film.id !== filmId));
     
         } catch (error) {
             console.error("FilmRanking - Erro ao marcar como assistido:", error);
-            // Trate o erro como preferir
         } finally {
-          setModalVisible(false); // Fecha o modal independente do sucesso ou erro
+          setModalVisible(false);
         }
     };
 
