@@ -1,5 +1,5 @@
-import React from "react";
-import { Modal } from "react-native";
+import React,{ useEffect, useState } from "react";
+import { Alert, Modal } from "react-native";
 import { StyledButton, ButtonLabel } from "@/assets/styles/global.styles";
 import {
     Overlay,
@@ -9,6 +9,7 @@ import {
   import {
     Title
   } from "@/assets/styles/global.styles";
+import { addUserWithInviteCode, getGroupIdByInviteCode} from "@/services/groups";
 
 interface EnterGroupModalProps {
   visible: boolean;
@@ -21,6 +22,22 @@ const EnterGroupModal: React.FC<EnterGroupModalProps> = ({
   onClose,
   onEnterGroup,
 }) => {
+  const [inviteCode, setInviteCode] = useState("");
+
+  const handleEnterGroup = async () => {
+    try{
+      const groupId = await getGroupIdByInviteCode(inviteCode);
+      await addUserWithInviteCode(groupId as string, inviteCode);
+
+      Alert.alert("Sucesso", "Você entrou em um grupo");
+      onEnterGroup();
+      onClose();
+    }catch(error){
+      console.error(`Erro ao entrar no grupo`);
+      Alert.alert("Error", "Código de convite inválido ou espirado");
+    }
+  };
+
   return (
     <Modal
       transparent={true}
@@ -33,8 +50,10 @@ const EnterGroupModal: React.FC<EnterGroupModalProps> = ({
           <Title>Informe o código do grupo</Title>
           <StyledInput
             placeholder="Código do Grupo"
+            value={inviteCode}
+            onChangeText={setInviteCode}
           />
-          <StyledButton onPress={onClose}>
+          <StyledButton onPress={handleEnterGroup}>
             <ButtonLabel>Entrar</ButtonLabel>
           </StyledButton>
         </ModalWrapper>

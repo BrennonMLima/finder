@@ -124,3 +124,34 @@ export const generateFilmRanking = async (groupId: string): Promise<FilmRankingR
     throw error;
   }
 }
+
+export const generateInviteCode = async (groupId: string) => {
+  try{
+    const response = await api.post(`/group/${groupId}/invite`);
+    return response.data.inviteCode;
+  } catch(error) {
+    console.error(`Erro ao gerar um código de convite para o grupo: ${groupId}`);
+    throw error;
+  }
+}
+
+export const addUserWithInviteCode = async (groupId: string, inviteCode:string): Promise<void> => {
+  try{
+    const response = await api.post(`group/${groupId}/join`, {
+      inviteCode
+    });
+    return response.data;
+  }catch(error){
+    console.error(`Erro ao entrar no grupo ${groupId} com o codigo ${inviteCode}`);
+  }
+}
+
+export const getGroupIdByInviteCode = async (code: string): Promise<string|null> => {
+  try{
+    const response = await api.get(`group/groupId/${code}`);
+    return response.data.groupId;
+  } catch (error){
+    console.error("Erro ao recuperar o id do grupo");
+    throw error;
+  }
+}

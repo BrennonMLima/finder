@@ -18,7 +18,7 @@ import {
   StyledButton,
   ButtonLabel,
 } from "@/assets/styles/global.styles";
-import { createGroup,genresList } from "@/services/groups";
+import { createGroup,generateInviteCode,genresList } from "@/services/groups";
 import { Feather } from '@expo/vector-icons';
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
@@ -32,7 +32,7 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
   visible,
   onClose,
 }) => {
-
+  
   return (
     <Modal
       visible={visible}
@@ -46,7 +46,7 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
           <EditProfile>
             <Pressable>
                 <ImageContainer>
-                    <EditableImage source={require("@/assets/images/profile.png")}/>
+                    <EditableImage source={require("@/assets/images/pantera.jpg")}/>
                     <EditIconContainer>
                         <Feather name="edit" size={40} color="#fff"/>
                     </EditIconContainer>

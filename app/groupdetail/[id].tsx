@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, View, Pressable, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { getGroupById, getUsersInGroup, deleteGroup, GenreResponse, getGenresInGroup} from "@/services/groups";
+import { getGroupById, getUsersInGroup, deleteGroup, GenreResponse, getGenresInGroup, generateInviteCode} from "@/services/groups";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import {
@@ -144,7 +144,6 @@ export default function GroupDetailScreen() {
   const handleRankingPress = () =>{
     const groupId = id;
     router.push(`/filmranking?groupId=${groupId}`);
-
   }
 
   if (error) {
@@ -287,6 +286,7 @@ export default function GroupDetailScreen() {
       <GenerateCodeModal
           visible={generateCodeVisible}
           onClose={() => setGenerateCodeVisible(false)}
+          groupId={id as string}
       />
 
     </ScrollView>
