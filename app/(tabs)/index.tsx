@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import { Container } from "@/assets/styles/global.styles";
 import { Picker } from "@react-native-picker/picker";
@@ -26,6 +26,7 @@ import {
 import { Group, getGroupGenres } from "@/services/groups";
 import { getUserGroups } from "@/services/users";
 import { addFilm } from "@/services/films";
+import { useFocusEffect } from "expo-router";
 
 
 const API_KEY = "30feaffc6e5c122072bd41275477c810";
@@ -54,7 +55,7 @@ export default function HomeScreen() {
     </Pressable>
   );
 
-  useEffect(() => {
+
     const fetchGroups = async () => {
       try {
         const response = await getUserGroups();
@@ -73,8 +74,15 @@ export default function HomeScreen() {
       }
     };
 
+  useEffect(() => {
     fetchGroups();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchGroups();
+    }, [])
+  );
 
   useEffect(() => { 
     const fetchGenresAndMovies = async () => {
@@ -140,6 +148,7 @@ const fetchMovies = async (genreIds = "") => {
     setIsLoadingMovies(false); // Marca como não carregando
   }
 };
+
 
   const fetchGenresForCurrentMovie = async (movieId: number) => {
     try {
