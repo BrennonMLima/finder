@@ -20,7 +20,7 @@ export default function TabLayout() {
         },
         headerShown: false,
         tabBarLabelStyle: {
-          fontSize: 16,
+          fontSize: 12,
           fontWeight: "bold",
           padding: 0,
         },
