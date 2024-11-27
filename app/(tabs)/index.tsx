@@ -309,9 +309,8 @@ const handleSwipe = async (direction: string) => {
       >
         <View style={styles.modalView}>
           <Text style={styles.modalText}>
-            Selecione um grupo para filtrar os filmes. Para ver filmes de todos os
-            grupos, selecione "Todos os grupos". Você precisa estar em pelo menos um grupo
-            para usar estes filtros.
+           Escolha um grupo para filtrar os filmes com base nos gêneros associados a ele.
+           Para visualizar filmes de todos os gêneros, selecione 'Todos os gêneros'.
           </Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
@@ -356,7 +355,7 @@ const handleSwipe = async (direction: string) => {
 
 const styles = StyleSheet.create({
   pickerContainer: {
-    padding: 10,
+    padding: 5,
     width: "90%",
     alignSelf: "center",
     borderRadius: 10, // Bordas arredondadas
@@ -372,31 +371,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   picker: {
-    backgroundColor: "white",
+    backgroundColor: "#262626",
     flex: 1, // Permite que o picker ocupe o espaço disponível
     borderRadius: 10, // Bordas arredondadas
-    color: "black",
+    color: "white",
     height: 40,
     fontSize: 16,
     paddingHorizontal: 10,
   },
   // Estilos para o Modal
   modalView: {
-    backgroundColor: "white",
+    backgroundColor: "#333",
     margin: 20,
-    padding: 35,
+    padding: 25,
+    borderRadius: 15,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 20,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
   },
   button: {
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 10,
     elevation: 2,
   },
@@ -410,6 +410,7 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
+    color: "white",
     textAlign: "center",
   },
 });
