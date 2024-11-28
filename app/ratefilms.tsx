@@ -105,6 +105,7 @@ export default function RateFilmsScreen() {
             <FilmCard>
               <FilmTitle>{film.title}</FilmTitle>
               <FilmBanner
+              resizeMode="stretch"
                 source={
                   film.posterPath
                     ? { uri: film.posterPath }

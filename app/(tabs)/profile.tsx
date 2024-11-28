@@ -109,7 +109,6 @@ export default function ProfileScreen() {
         ) : (
           <Nickname>Carregando...</Nickname>
         )}
-        <Links>Seja Premium *</Links>
         <Links onPress={navigateToRateFilms}>Avaliar Filmes</Links>
       </Content>
 
