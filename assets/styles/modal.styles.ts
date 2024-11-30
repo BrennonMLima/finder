@@ -48,7 +48,7 @@ export const TagText = styled.Text`
 `;
 
 export const TextInput = styled.TextInput`
-  width: 100%;
+  width: 95%;
   height: 50px;
   background-color: #eee;
   border-radius: 10px;

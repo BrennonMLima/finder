@@ -90,3 +90,9 @@ export const Separator = styled.View`
   width: 100%;
   margin: 8px 0;
 `;
+
+export const Header = styled.View`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`

@@ -58,6 +58,9 @@ export const RankingBtn = styled.View`
 
 export const Members = styled.View`
   margin-top: 55px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 `;
 
 export const Footer = styled.View`
@@ -86,3 +89,11 @@ export const Texto = styled.Text`
   font-size: ${RFValue(16)}px;
   color: #ddd;
 `;
+
+export const InviteContainer = styled.Pressable`
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 80%;
+  padding: 10px 0px;
+`

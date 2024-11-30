@@ -14,6 +14,7 @@ import {
   EventName,
   Footer,
   GroupHeader,
+  InviteContainer,
   Members,
   NewEventButton,
   RankingBtn,
@@ -27,14 +28,13 @@ import {
   MenuItem,
   MenuItemText,
   Separator,
-  SettingsIcon,
   StyledButtonShort,
 } from "@/assets/styles/global.styles";
 import ConfirmationModal from "../../components/confirmationModal";
 import EditGroupModal from "@/components/editGroupModal";
 import EditEventModal from "@/components/editEventModal";
 import GenerateCodeModal from "@/components/generateCodeModal";
-
+import Header from "@/components/header";
 
 export default function GroupDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -67,7 +67,8 @@ export default function GroupDetailScreen() {
             setEvent(Event);
 
             const genresResponse = await getGenresInGroup(id as string);
-          setGroupGenres(genresResponse.genres || []);  
+            console.log("generos",genresResponse)
+            setGroupGenres(genresResponse.genres || []);  
           }
         } catch (error) {
           setError("Erro ao carregar os detalhes do grupo.");
@@ -162,21 +163,10 @@ export default function GroupDetailScreen() {
         flex: 1,
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Pressable onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={28} color="#fff" />
-        </Pressable>
-
-        <SettingsIcon onPress={toggleMenu}>
-          <Ionicons name="ellipsis-vertical" size={28} color="#fff" />
-        </SettingsIcon>
-      </View>
+      <Header
+        onBackPress={() => router.back()}
+        onSettingsPress={toggleMenu}
+      />
 
       {menuVisible && (
         <MenuContainer>
@@ -237,9 +227,10 @@ export default function GroupDetailScreen() {
       <Footer>
         <Members>
           <Texto style={{ fontSize: 18 }}>Membros: {members.length}</Texto>
-          <Pressable onPress={() => setGenerateCodeVisible(true)}>
-            <Texto>+ Gerar código de convite</Texto>
-          </Pressable>
+          <InviteContainer onPress={() => setGenerateCodeVisible(true)} >
+            <Feather name="link" size={16} color="#007bff" />
+            <Texto>Convidar via código</Texto>
+          </InviteContainer >
           {members.map((member, index) => (
             <Texto key={index}>{member}</Texto>
           ))}
