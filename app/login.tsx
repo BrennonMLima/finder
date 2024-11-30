@@ -90,8 +90,11 @@ const LoginScreen: React.FC<LoginProps> = ({ onLogin }) => {
         </Pressable>
 
         <Pressable>
-          <Link href={"./signup"}>
-            <Text style={styles.link}>Não tem uma conta? Cadastre-se!</Text>
+        <Link href={"./signup"}>
+          <Text style={{ color: '#fff' }}>
+            Não tem uma conta?{" "}
+            <Text style={styles.link}>Cadastre-se!</Text>
+          </Text>
           </Link>
         </Pressable>
       </View>
@@ -137,6 +140,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     marginTop: 10,
+    marginBottom: 20,
   },
   buttonText: {
     color: "#fff",

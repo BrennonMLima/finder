@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
 import {
   Container,
   Content,
@@ -7,15 +6,13 @@ import {
   Nickname,
   Links,
 } from "@/assets/styles/profile.styles";
-import { getUserFromToken, User } from "@/services/users";
+import { getUserById2, User } from "@/services/users";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import {
-  StyledButton,
-  ButtonLabel,
   MenuContainer,
   MenuItem,
   MenuItemText,
@@ -24,6 +21,7 @@ import {
 } from "@/assets/styles/global.styles";
 import ConfirmationModal from "../../components/confirmationModal";
 import EditProfileModal from "@/components/editProfileModal";
+import { profileImages } from "@/assets/styles/profileImage";
 
 export default function ProfileScreen() {
   const [error, setError] = useState("");
@@ -32,12 +30,19 @@ export default function ProfileScreen() {
   const [menuVisible, setMenuVisible] = useState(false);
   const [logoutConfirmVisible, setLogoutConfirmVisible] = useState(false);
   const [editProfileVisible, setEditProfileVisible] = useState(false);
+  const [profileImage, setProfileImage] = useState<any>(null); // Armazena a imagem do perfil
 
   const fetchUser = async () => {
     try {
-      const userData = await getUserFromToken();
+      const userData = await getUserById2();
+      console.log(userData);
       if (userData) {
         setUser(userData);
+        // Busca a imagem do perfil pelo ID
+        const image = profileImages.find(
+          (img) => img.id === userData.profileImageId
+        );
+        setProfileImage(image ? image.source : null);
       }
     } catch (error) {
       setError("Falha ao recuperar dados do usuário");
@@ -103,7 +108,11 @@ export default function ProfileScreen() {
         </MenuContainer>
       )}
       <Content>
-        <ProfileImage source={require("@/assets/images/pantera.jpg")} />
+        {profileImage ? (
+          <ProfileImage source={profileImage} />
+        ) : (
+          <ProfileImage source={require("@/assets/images/profile/profile1.jpg")} />
+        )}
         {user ? (
           <Nickname>{user.name}</Nickname>
         ) : (

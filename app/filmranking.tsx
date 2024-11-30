@@ -14,7 +14,7 @@ import { useLocalSearchParams } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import ConfirmationWatched from "@/components/confirmationWatched";
 import { markAsWatched } from "@/services/films";
-import { getUserFromToken } from "@/services/users";
+import { getUserById2, getUserFromToken } from "@/services/users";
 
 const API_KEY = "30feaffc6e5c122072bd41275477c810";
 export const BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
@@ -86,7 +86,7 @@ export default function FilmsRankingScreen() {
                 return;
             }
     
-            const user = await getUserFromToken();
+            const user = await getUserById2();
             if (!user) {
                 console.error("FilmRanking - Usuário não encontrado no token");
                 return;

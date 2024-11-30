@@ -1,5 +1,4 @@
 import api, { getToken } from "./api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 
 interface DecodedToken {
@@ -9,18 +8,21 @@ interface DecodedToken {
 export interface User {
   id: string;
   name: string;
+  profileImageId: number | null;
 }
 
 export const login = async (email: string, password: string) => {
   return await api.post("/login", { email, password });
 };
 
-export const getAllUsers = async () => {
+
+export const getUserById = async (userId: string) => {
   return await api.get("/user");
 };
 
-export const getUserById = async (userId: string) => {
-  return await api.get(`/user/${userId}`);
+export const getUserById2 = async () => {
+  const response = await api.get("/user");
+  return response.data.user;
 };
 
 export const getUserByEmail = async (userEmail: string) => {
@@ -39,6 +41,11 @@ export const createUser = async (
   return await api.post("/user", { email, name, password });
 };
 
+export const updateProfileImage = async (profileImageId: number) => {
+  return await api.put(`/user/profile-image`, { profileImageId });
+};
+
+
 export const getUserFromToken = async () => {
   try {
     const token = await getToken();
@@ -47,12 +54,13 @@ export const getUserFromToken = async () => {
       const decodedToken = jwtDecode<DecodedToken>(token);
       if (decodedToken && decodedToken.id) {
         const response = await getUserById(decodedToken.id);
+        console.log("tadesacanagem",response)
         return response.data.users;
       }
     }
     return null;
   } catch (error) {
-    console.error("Erro ao decodificar o token ou obter o usu�rio:", error);
-    throw new Error("Falha ao obter usu�rio");
+    console.error("Erro ao decodificar o token ou obter o usuário:", error);
+    throw new Error("Falha ao obter usuário");
   }
 };

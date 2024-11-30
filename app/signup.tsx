@@ -6,17 +6,13 @@ import {
   Pressable,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform,
   Alert,
 } from "react-native";
-import { useRouter, Link } from "expo-router";
-import { createUser, getUserByEmail } from "../services/users"; // Importando o serviço
+import { Link, useRouter } from "expo-router";
+import { createUser, login } from "../services/users";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-interface RegisterProps {
-  onRegister?: (username: string, email: string, password: string) => void;
-}
-
-const RegisterScreen: React.FC<RegisterProps> = ({ onRegister }) => {
+const RegisterScreen: React.FC = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,7 +26,7 @@ const RegisterScreen: React.FC<RegisterProps> = ({ onRegister }) => {
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError("Por favor, insira um email válido.");
+      setError("Por favor, insira um e-mail válido.");
       return false;
     }
 
@@ -40,20 +36,35 @@ const RegisterScreen: React.FC<RegisterProps> = ({ onRegister }) => {
 
   const handleRegister = async () => {
     if (!validateForm()) return;
-
+  
     try {
-      const response = await createUser(email, username, password);
-      if (response.status === 201) {
-        Alert.alert("Sucesso", "Usuário criado com sucesso!");
-        router.replace("/login");
+      const registerResponse = await createUser(email, username, password);
+  
+      if (registerResponse.status === 201) {
+        const loginResponse = await login(email, password);
+  
+        if (loginResponse.status === 200) {
+          const { token } = loginResponse.data;
+  
+          await AsyncStorage.setItem("auth-token", token);
+  
+          Alert.alert("Sucesso", "Usuário criado e logado com sucesso!");
+          router.push({
+            pathname: "/profileimage",
+            params: { token },
+          });
+        } else {
+          setError("Não foi possível realizar o login.");
+        }
       } else {
         setError("Não foi possível criar o usuário.");
       }
     } catch (error) {
-      setError("Ocorreu um erro ao criar o usuário.");
+      setError("Ocorreu um erro ao criar o usuário ou realizar o login.");
       console.error(error);
     }
   };
+  
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -89,9 +100,10 @@ const RegisterScreen: React.FC<RegisterProps> = ({ onRegister }) => {
 
         <Pressable>
           <Link href={"./login"}>
-            <Text style={styles.link}>
-              Já tem uma conta? Clique aqui e faça Login
-            </Text>
+          <Text style={{ color: '#fff' }}>
+            Já tem uma conta?{" "}
+            <Text style={styles.link}>Faça Login!</Text>
+          </Text>
           </Link>
         </Pressable>
       </View>
@@ -131,22 +143,22 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   button: {
-    backgroundColor: "#0496ff",
+    backgroundColor: "#007bff",
     padding: 15,
     borderRadius: 10,
-    width: 200,
+    width: "100%",
     alignItems: "center",
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
   },
   link: {
-    color: "#FFF",
+    color: "#007bff",
     marginTop: 20,
-    textDecorationLine: "none",
+    textDecorationLine: "underline",
   },
 });
 
