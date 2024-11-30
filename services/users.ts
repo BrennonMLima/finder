@@ -41,6 +41,16 @@ export const createUser = async (
   return await api.post("/user", { email, name, password });
 };
 
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string
+) => {
+  return await api.put(`/user/changePassword`, {
+    currentPassword,
+    newPassword
+  });
+}
+
 export const updateProfileImage = async (profileImageId: number) => {
   return await api.put(`/user/profile-image`, { profileImageId });
 };

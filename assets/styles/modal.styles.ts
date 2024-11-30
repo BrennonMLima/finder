@@ -127,5 +127,22 @@ export const StyledInputContainer = styled.View`
   width: 100%;
 `;
 
+export const ButtonPassword = styled.Pressable`
+  background-color: #007bff;
+  padding: 10px 5px;
+  border-radius: 8px;
+  display: flex;
+  align-self: flex-start;
+  width: 40%;
+  margin-bottom: 13px;
+`;
+
+export const ButtonTextPassword = styled.Text`
+  font-size: 15px;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+`;
+
 
 
