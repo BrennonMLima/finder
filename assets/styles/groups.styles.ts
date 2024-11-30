@@ -67,7 +67,7 @@ export const EnterGroupButton = styled.Pressable`
   align-self: flex-start;
   width: 40%;
   border-width: 1px;
-  borderColor: #fff;
+  borderColor: #007bff;
 `;
 
 export const ButtonTextEnter = styled.Text`

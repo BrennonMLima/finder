@@ -139,6 +139,7 @@ export default function FilmsRankingScreen() {
                     const FilmCardComponent = index === 0 ? HighlightedFilmCard : FilmCard;
                     return (
                         <Pressable
+                            key={film.id}
                             onPress={() => {
                                 setSelectedFilm(film);
                                 setModalVisible(true);

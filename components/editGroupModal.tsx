@@ -23,7 +23,13 @@ interface EditGroupModalProps {
   initialName: string;
   initialDescription: string;
   initialGenres: { id: number; name: string }[];
+  onGroupUpdate: (updatedGroup: {
+    name: string;
+    description: string;
+    genres: { id: number; name: string }[];
+  }) => void;
 }
+
 
 const EditGroupModal: React.FC<EditGroupModalProps> = ({
   visible,
@@ -32,6 +38,7 @@ const EditGroupModal: React.FC<EditGroupModalProps> = ({
   initialName,
   initialDescription,
   initialGenres,
+  onGroupUpdate,
 }) => {
   const [groupName, setGroupName] = useState(initialName);
   const [groupDescription, setGroupDescription] = useState(initialDescription);
@@ -47,7 +54,7 @@ const EditGroupModal: React.FC<EditGroupModalProps> = ({
 
   const handleUpdateGroup = async () => {
     if (!groupName || !groupDescription || selectedGenres.length === 0) {
-      Alert.alert("Erro", "Todos os campos s�o obrigat�rios!");
+      Alert.alert("Erro", "Todos os campos são obrigatórios!");
       return;
     }
     try {
@@ -55,8 +62,15 @@ const EditGroupModal: React.FC<EditGroupModalProps> = ({
       await updateGroup(groupId, {
         name: groupName,
         description: groupDescription,
-        genreIds: genreIds,
+        genreIds,
       });
+  
+      onGroupUpdate({
+        name: groupName,
+        description: groupDescription,
+        genres: selectedGenres,
+      });
+  
       onClose();
       Alert.alert("Sucesso", "Grupo atualizado com sucesso!");
     } catch (error) {
@@ -64,6 +78,7 @@ const EditGroupModal: React.FC<EditGroupModalProps> = ({
       Alert.alert("Erro", "Não foi possível atualizar o grupo.");
     }
   };
+  
 
   const addGenre = (genre: { id: number; name: string }) => {
     if (!selectedGenres.some((g) => g.id === genre.id)) {

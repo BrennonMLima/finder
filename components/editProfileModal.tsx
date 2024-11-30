@@ -54,6 +54,7 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
           (img) => img.id === userData.profileImageId
         );
         setProfileImage(image ? image.source : null);
+        console.log("imagem",profileImage)
       }
     }catch(error){
       setError("Falha ao recuperar dados do usuário");
@@ -102,7 +103,7 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
                     <EditableImage source={profileImage}/>
                   ) : (
                     <EditableImage source={require("@/assets/images/pantera.jpg")}/>
-                  )};
+                  )}
                     <EditIconContainer>
                         <Feather name="edit" size={40} color="#fff"/>
                     </EditIconContainer>

@@ -112,6 +112,17 @@ export default function GroupDetailScreen() {
     }
   };
   
+  const handleGroupUpdate = (updatedGroup: {
+    name: string;
+    description: string;
+    genres: { id: number; name: string }[];
+  }) => {
+    setGroupName(updatedGroup.name);
+    setGroupDescription(updatedGroup.description);
+    setGroupGenres(updatedGroup.genres);
+  };
+
+  
   const handleEditEvent = async (
     eventId: string,
     name: string,
@@ -252,6 +263,7 @@ export default function GroupDetailScreen() {
       initialName={groupName}
       initialDescription={groupDescription}
       initialGenres={groupGenres}
+      onGroupUpdate={handleGroupUpdate}
     />
 
       {/* Modal de confirmação para sair do grupo */}

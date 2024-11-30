@@ -30,7 +30,7 @@ export default function ProfileScreen() {
   const [menuVisible, setMenuVisible] = useState(false);
   const [logoutConfirmVisible, setLogoutConfirmVisible] = useState(false);
   const [editProfileVisible, setEditProfileVisible] = useState(false);
-  const [profileImage, setProfileImage] = useState<any>(null); // Armazena a imagem do perfil
+  const [profileImage, setProfileImage] = useState<any>(null);
 
   const fetchUser = async () => {
     try {
@@ -38,7 +38,6 @@ export default function ProfileScreen() {
       console.log(userData);
       if (userData) {
         setUser(userData);
-        // Busca a imagem do perfil pelo ID
         const image = profileImages.find(
           (img) => img.id === userData.profileImageId
         );
@@ -82,7 +81,7 @@ export default function ProfileScreen() {
   };
 
   const navigateToRateFilms = () => {
-    router.push("/ratefilms"); // Redireciona para a tela de avaliar filmes
+    router.push("/ratefilms");
   };
 
   return (

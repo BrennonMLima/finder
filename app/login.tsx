@@ -13,6 +13,8 @@ import { useRouter, Link } from "expo-router";
 import { login } from "../services/users";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getToken } from "@/services/api";
+import FloatingLabelInput from "@/components/input";
+import InputTop from "@/components/input";
 
 interface LoginProps {
   onLogin: (username: string, password: string) => void;
@@ -69,14 +71,13 @@ const LoginScreen: React.FC<LoginProps> = ({ onLogin }) => {
       <Text style={styles.subtitle}>Olá, bem-vindo(a) de volta!</Text>
 
       <View style={styles.form}>
-        <TextInput
-          style={styles.input}
-          placeholder="E-mail"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          style={styles.input}
+      <InputTop
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+
+      />
+        <InputTop
           placeholder="Senha"
           secureTextEntry
           value={password}

@@ -11,6 +11,7 @@ import {
 import { Link, useRouter } from "expo-router";
 import { createUser, login } from "../services/users";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import InputTop from "@/components/input";
 
 const RegisterScreen: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -70,21 +71,17 @@ const RegisterScreen: React.FC = () => {
       <Text style={styles.title}>Crie sua Conta</Text>
       <Text style={styles.subtitle}>Seja bem-vindo(a) ao Finder!</Text>
       <View style={styles.form}>
-        <TextInput
-          style={styles.input}
+        <InputTop
           placeholder="Nome"
           value={username}
           onChangeText={setUsername}
         />
-        <TextInput
-          style={styles.input}
+        <InputTop
           placeholder="E-mail"
           value={email}
           onChangeText={setEmail}
-          keyboardType="email-address"
         />
-        <TextInput
-          style={styles.input}
+        <InputTop
           placeholder="Senha"
           secureTextEntry
           value={password}

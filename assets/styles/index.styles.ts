@@ -68,3 +68,4 @@ export const IconContainer = styled.View`
   width: 60%;
   margin-top: 30px;
 `;
+
