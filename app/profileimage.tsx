@@ -20,7 +20,7 @@ const ProfileImageScreen = () => {
     }
     try {
       await updateProfileImage(selectedImage);
-      Alert.alert("Sucesso", "Foto selecionada com sucesso!");
+      Alert.alert("Sucesso", "Usuário criado com sucesso!");
       router.replace("/login");
     } catch (error) {
       console.error(error);

@@ -48,7 +48,6 @@ const RegisterScreen: React.FC = () => {
   
           await AsyncStorage.setItem("auth-token", token);
   
-          Alert.alert("Sucesso", "Usuário criado e logado com sucesso!");
           router.push({
             pathname: "/profileimage",
             params: { token },
