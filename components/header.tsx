@@ -17,6 +17,8 @@ const HeaderContainer = styled.View`
   align-items: center;
   width: 100%;
   margin-top: 20px;
+  position: fixed;
+  top: 0;
 `;
 
 const SettingsIcon = styled.Pressable`
@@ -37,9 +39,11 @@ const Header: React.FC<HeaderProps> = ({
         <Ionicons name="arrow-back" size={28} color={backIconColor} />
       </BackIcon>
 
-      <SettingsIcon onPress={onSettingsPress}>
-        <Ionicons name="ellipsis-vertical" size={28} color={settingsIconColor} />
-      </SettingsIcon>
+      {onSettingsPress && (
+        <SettingsIcon onPress={onSettingsPress}>
+          <Ionicons name="ellipsis-vertical" size={28} color={settingsIconColor} />
+        </SettingsIcon>
+      )}
     </HeaderContainer>
   );
 };

@@ -48,12 +48,9 @@ export default function RootLayout() {
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="signup" options={{ headerShown: false }} />
         <Stack.Screen name="profileimage" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="groupdetail/[id]"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="/filmranking/[id]"/>
-        <Stack.Screen name="ratefilms"/>
+        <Stack.Screen name="groupdetail/[id]" options={{ headerShown: false }}/>
+        <Stack.Screen name="filmranking/[groupId]" options={{ headerShown: false }}/>
+        <Stack.Screen name="ratefilms" options={{ headerShown: false }}/>
       </Stack>
     </ThemeProvider>
   );

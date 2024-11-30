@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, View, Pressable, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { getGroupById, getUsersInGroup, deleteGroup, GenreResponse, getGenresInGroup, generateInviteCode} from "@/services/groups";
+import { getGroupById, getUsersInGroup, deleteGroup, GenreResponse, getGenresInGroup} from "@/services/groups";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import {
@@ -65,11 +65,11 @@ export default function GroupDetailScreen() {
           const Event = await getEventsByGroup(group.id);
           if (Event) {
             setEvent(Event);
-
-            const genresResponse = await getGenresInGroup(id as string);
-            console.log("generos",genresResponse)
-            setGroupGenres(genresResponse.genres || []);  
           }
+
+          const genresResponse = await getGenresInGroup(id as string);
+          setGroupGenres(genresResponse.genres || []);  
+
         } catch (error) {
           setError("Erro ao carregar os detalhes do grupo.");
         }
@@ -143,8 +143,9 @@ export default function GroupDetailScreen() {
   };
 
   const handleRankingPress = () =>{
-    const groupId = id;
-    router.push(`/filmranking?groupId=${groupId}`);
+    const groupId = id as string;
+    console.log(groupId)
+    router.push(`/filmranking/${groupId}`);
   }
 
   if (error) {

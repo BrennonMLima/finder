@@ -10,11 +10,12 @@ import {
 } from "@/assets/styles/filmraking.styles";
 import { Text, ScrollView, View, Pressable } from "react-native";
 import { generateFilmRanking } from "@/services/groups";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import ConfirmationWatched from "@/components/confirmationWatched";
 import { markAsWatched } from "@/services/films";
 import { getUserById2, getUserFromToken } from "@/services/users";
+import Header from "@/components/header";
 
 const API_KEY = "30feaffc6e5c122072bd41275477c810";
 export const BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
@@ -118,36 +119,60 @@ export default function FilmsRankingScreen() {
                 flexGrow: 1,
             }}
         >
+            <Header onBackPress={() => router.back()} />
+    
             <View>
                 <Title>Ranking de Filmes</Title>
             </View>
-            {ranking.map((film, index) => {
-                const FilmCardComponent = index === 0 ? HighlightedFilmCard : FilmCard;
-                return (
-                <Pressable onPress={() => { setSelectedFilm(film); setModalVisible(true); }}>
-                    <FilmCardComponent key={film.id}>
-                        <ImageFilm
-                            source={
-                                film.posterPath
-                                    ? { uri: film.posterPath }
-                                    : require("@/assets/images/favicon.png")
-                            }
-                        />
-                        <FilmInfo>
-                            <FilmTitle>{`${index + 1}º - ${film.title}`}</FilmTitle>
-                            <Votes>{`${film.votes} votos`}</Votes>
-                        </FilmInfo>
-                    <MaterialIcons name="chevron-right" size={24} color="#fff" />
-                    </FilmCardComponent>
-                </Pressable>
-                );
-            })}
+    
+            {ranking.length === 0 ? (
+                <View style={{ marginTop: 30, gap: 10 }}>
+                    <Text style={{ color: "#fff", fontSize: 24, textAlign: "center" }}>
+                        Sem filmes no ranking
+                    </Text>
+                    <Text style={{ color: "#fff", fontSize: 18, textAlign: "center" }}>
+                        Vote nos filmes que desperte seu interesse para que eles apareçam aqui no ranking!
+                    </Text>
+                </View>
+            ) : (
+                ranking.map((film, index) => {
+                    const FilmCardComponent = index === 0 ? HighlightedFilmCard : FilmCard;
+                    return (
+                        <Pressable
+                            onPress={() => {
+                                setSelectedFilm(film);
+                                setModalVisible(true);
+                            }}
+                        >
+                            <FilmCardComponent key={film.id}>
+                                <ImageFilm
+                                    source={
+                                        film.posterPath
+                                            ? { uri: film.posterPath }
+                                            : require("@/assets/images/favicon.png")
+                                    }
+                                />
+                                <FilmInfo>
+                                    <FilmTitle>{`${index + 1}° - ${film.title}`}</FilmTitle>
+                                    <Votes>{`${film.votes} ${film.votes === 1 ? 'voto' : 'votos'}`}</Votes>
+                                </FilmInfo>
+                                <MaterialIcons name="chevron-right" size={24} color="#fff" />
+                            </FilmCardComponent>
+                        </Pressable>
+                    );
+                })
+            )}
+    
             <ConfirmationWatched
-            visible={modalVisible}
-            film={selectedFilm}
-            onClose={() => { setModalVisible(false); setSelectedFilm(null); }}
-            onConfirm={handleMarkAsWatched}
-          />
+                visible={modalVisible}
+                film={selectedFilm}
+                onClose={() => {
+                    setModalVisible(false);
+                    setSelectedFilm(null);
+                }}
+                onConfirm={handleMarkAsWatched}
+            />
         </ScrollView>
     );
+    
 }

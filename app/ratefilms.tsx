@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, Pressable, View } from "react-native";
 import { getWatchedFilms, getUserFilmRating, rateFilm } from "@/services/films";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   FilmCard,
   FilmBanner,
@@ -11,6 +11,8 @@ import {
 import { Container } from "@/assets/styles/global.styles";
 import RateFilmModal from "@/components/rateFIlmModal";
 import { Title } from "@/assets/styles/filmraking.styles";
+import Header from "@/components/header";
+import StarRating from "@/components/starRating";
 
 interface Film {
   id: string;
@@ -90,37 +92,53 @@ export default function RateFilmsScreen() {
         flexGrow: 1,
       }}
     >
-        <View>
-            <Title>Avaliações</Title>
-        </View>
+      <Header onBackPress={() => router.back()} />
+
+      <View>
+        <Title>Avaliações</Title>
+      </View>
       <Container>
-        {films.map((film) => (
-          <Pressable
-            key={film.id}
-            onPress={() => {
-              setSelectedFilm(film);
-              setModalVisible(true);
-            }}
-          >
-            <FilmCard>
-              <FilmTitle>{film.title}</FilmTitle>
-              <FilmBanner
-              resizeMode="stretch"
-                source={
-                  film.posterPath
-                    ? { uri: film.posterPath }
-                    : require("@/assets/images/favicon.png")
-                }
-              />
-              <FilmRating>
-                {film.userRating
-                  ? `Nota: ${film.userRating}`
-                  : "Avaliar"}
-              </FilmRating>
-            </FilmCard>
-          </Pressable>
-        ))}
+        {films.length === 0 ? (
+          <View style={{ marginTop: 30, gap: 10 }}>
+            <Text style={{ color: "#fff", fontSize: 24, textAlign: "center" }}>
+              Sem filmes para avaliar
+            </Text>
+            <Text style={{ color: "#fff", fontSize: 18, textAlign: "center" }}>
+              Os filmes marcados como assistidos aparecerão aqui.
+            </Text>
+          </View>
+        ) : (
+          films.map((film) => (
+            <Pressable
+              key={film.id}
+              onPress={() => {
+                setSelectedFilm(film);
+                setModalVisible(true);
+              }}
+            >
+              <FilmCard>
+                <FilmTitle>{film.title}</FilmTitle>
+                <FilmBanner
+                  resizeMode="stretch"
+                  source={
+                    film.posterPath
+                      ? { uri: film.posterPath }
+                      : require("@/assets/images/favicon.png")
+                  }
+                />
+                <FilmRating>
+                  {film.userRating ? (
+                    <StarRating rating={film.userRating} />
+                  ) : (
+                    "Avaliar"
+                  )}
+                </FilmRating>
+              </FilmCard>
+            </Pressable>
+          ))
+        )}
       </Container>
+
       {selectedFilm && (
         <RateFilmModal
           visible={modalVisible}

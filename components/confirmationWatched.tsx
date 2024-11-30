@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, View, Text, Pressable, Image, ScrollView } from "react-native";
-import { FilmRankingResponse } from "@/app/filmranking";
+import { FilmRankingResponse } from "@/app/filmranking/[groupId]";
 import {
   Overlay,
   ModalWrapper,
