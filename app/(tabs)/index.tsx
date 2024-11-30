@@ -27,6 +27,7 @@ import { Group, getGroupGenres } from "@/services/groups";
 import { getUserGroups } from "@/services/users";
 import { addFilm } from "@/services/films";
 import { useFocusEffect } from "expo-router";
+import SkeletonLoader from "@/components/loadingAnimation";
 
 
 const API_KEY = "30feaffc6e5c122072bd41275477c810";
@@ -251,7 +252,7 @@ const handleSwipe = async (direction: string) => {
   if (!movies || movies.length === 0) {
     return (
       <Container>
-        <Text>Carregando filmes...</Text>
+        <SkeletonLoader />
       </Container>
     );
   }
@@ -269,7 +270,7 @@ const handleSwipe = async (direction: string) => {
   if (isLoadingMovies) {
     return (
       <Container>
-        <Text>Carregando filmes...</Text>
+        <SkeletonLoader />
       </Container>
     );
   }
