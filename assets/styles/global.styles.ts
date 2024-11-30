@@ -48,6 +48,7 @@ export const SettingsIconWrapper = styled.Pressable`
   position: absolute;
   top: 20px;
   right: 20px;
+  margin-top: 30px;
   z-index: 1;
 `;
 

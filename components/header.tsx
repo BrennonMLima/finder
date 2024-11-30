@@ -16,8 +16,7 @@ const HeaderContainer = styled.View`
   display: flex;
   align-items: center;
   width: 100%;
-  margin-top: 20px;
-  position: fixed;
+  margin-top: 30px;
   top: 0;
 `;
 
