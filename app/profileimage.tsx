@@ -21,7 +21,6 @@ const ProfileImageScreen = () => {
     try {
       await updateProfileImage(selectedImage);
       Alert.alert("Sucesso", "Usuário criado com sucesso!");
-      router.replace("/login");
     } catch (error) {
       console.error(error);
       Alert.alert("Erro", "Não foi possível atualizar a foto de perfil. Tente novamente.");
