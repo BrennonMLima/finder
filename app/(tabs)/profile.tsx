@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Container,
   Content,
@@ -8,7 +8,7 @@ import {
 } from "@/assets/styles/profile.styles";
 import { getUserById2, User } from "@/services/users";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -52,6 +52,12 @@ export default function ProfileScreen() {
   useEffect(() => {
     fetchUser();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUser();
+    }, [])
+  );
 
   const handleLogout = async () => {
     try {
@@ -133,6 +139,7 @@ export default function ProfileScreen() {
       <EditProfileModal
         visible={editProfileVisible}
         onClose={() => setEditProfileVisible(false)}
+        onEditUser={fetchUser}
       />
     </Container>
   );

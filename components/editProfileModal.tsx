@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Modal, Alert, FlatList, Pressable, Text, View } from "react-native";
 import {
   Overlay,
@@ -24,25 +24,38 @@ import { createGroup,generateInviteCode,genresList } from "@/services/groups";
 import { Feather } from '@expo/vector-icons';
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
-import { getUserById2, changePassword } from "@/services/users";
+import { getUserById2, changePassword, updateUser } from "@/services/users";
 import { profileImages } from "@/assets/styles/profileImage";
-
+import {  useFocusEffect, useRouter } from "expo-router";
 interface EditProfileModalProps {
   visible: boolean;
   onClose: () => void;
+  onEditUser: () => void;
+}
+
+interface User {
+  id: string;
+  name: string;
+  email?: string;
+  profileImageId?: string; // Opcional
 }
 
 const editProfileModal: React.FC<EditProfileModalProps> = ({
   visible,
   onClose,
+  onEditUser
 }) => {
   const [error, setError] = useState("");
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState<User | null>(null)
   const [profileImage, setProfileImage] = useState<any>(null);
   const [showInputs, setShowInputs] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
+
+  const router = useRouter();
   
   const fetchUser = async () => {
     try{
@@ -62,15 +75,53 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
     }
   }
 
+  const handleChangeName = async () => {
+    if(user?.name === username){
+      setError("Seu nome continua o mesmo");
+      return false
+    }
+    try{
+      await updateUser(username);
+
+      Alert.alert("Sucesso", "Nome alterado com sucesso");
+
+      await fetchUser();
+      clearInput();
+      onEditUser();
+      onClose();
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+  const handleEditImage = () => {
+    router.push({
+      pathname: "/profileimage"
+    });
+    onClose();
+  }
+
   const handleChangePassword = async () => {
+    if(!comparePassword()) return;
     try{
       await changePassword(currentPassword, confirmPassword);
       Alert.alert("Sucesso", "Senha alterada com sucesso");
       console.log("Senha alterada com sucesso")
+      handleCancel()
     }catch(error){
       Alert.alert("Erro", "Erro ao alterar a senha");
       console.error(error);
     }
+  }
+
+  const comparePassword = () => {
+    if(newPassword !== confirmPassword){
+      setError("As senhas não são iguais");
+      console.log("As senhas não são iguais");
+      return false;
+    }
+    setError("");
+    return true;
   }
 
   const handlePasswordChange = () => {
@@ -80,11 +131,28 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
   const handleCancel = () => {
     setShowInputs(false);
     onClose();
+    clearInput();
   }
+
+  const clearInput = () => {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    if (user?.name) {
+      setUsername(user.name);
+    }
+    setError("");
+    }
 
   useEffect(() => {
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (user?.name) {
+      setUsername(user.name);
+    }
+  }, [user]);
   
   return (
     <Modal
@@ -104,14 +172,16 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
                   ) : (
                     <EditableImage source={require("@/assets/images/pantera.jpg")}/>
                   )}
-                    <EditIconContainer>
+                    <EditIconContainer onPress={handleEditImage}>
                         <Feather name="edit" size={40} color="#fff"/>
                     </EditIconContainer>
                 </ImageContainer>
             </Pressable>
           {user ? (
             <StyledInput
-              placeholder={user.name}
+              value={username}
+              onChangeText={setUsername}
+              editable={!showInputs}
             />
           ) : (
             <StyledInput
@@ -121,9 +191,20 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
         </EditProfile>
 
         {!showInputs ? (
-          <ButtonPassword onPress={handlePasswordChange}>
-            <ButtonTextPassword>Alterar Senha</ButtonTextPassword>
-          </ButtonPassword>
+          <>
+            <ButtonPassword onPress={handlePasswordChange}>
+              <ButtonTextPassword>Alterar Senha</ButtonTextPassword>
+            </ButtonPassword>
+
+            {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
+
+            <StyledButton>
+              <ButtonLabel onPress={handleChangeName}>Editar</ButtonLabel>
+            </StyledButton>
+            <StyledButton onPress={handleCancel} secondColor>
+              <ButtonLabel secondColor>Cancelar</ButtonLabel>
+            </StyledButton>
+          </>
         ) : (
           <>
             <StyledInput
@@ -144,15 +225,15 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
               value={confirmPassword}
               onChangeText={setConfirmPassword}
             />
+                        {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
+           <StyledButton>
+              <ButtonLabel onPress={handleChangePassword}>Alterar Senha</ButtonLabel>
+            </StyledButton>
+            <StyledButton onPress={handleCancel} secondColor>
+              <ButtonLabel secondColor>Cancelar</ButtonLabel>
+            </StyledButton>
           </>
         )}
-
-          <StyledButton>
-            <ButtonLabel onPress={handleChangePassword}>Editar</ButtonLabel>
-          </StyledButton>
-          <StyledButton onPress={handleCancel} secondColor>
-            <ButtonLabel secondColor>Cancelar</ButtonLabel>
-          </StyledButton>
         </EditModalWrapper>
       </Overlay>
     </Modal>

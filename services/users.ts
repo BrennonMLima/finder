@@ -33,6 +33,14 @@ export const getUserGroups = async () => {
   return await api.get(`/group`);
 };
 
+export const updateUser = async (
+  name: string 
+) => {
+  return await api.put(`/user`, {
+    name
+  })
+}
+
 export const createUser = async (
   email: string,
   name: string,
@@ -40,6 +48,7 @@ export const createUser = async (
 ) => {
   return await api.post("/user", { email, name, password });
 };
+
 
 export const changePassword = async (
   currentPassword: string,
@@ -49,7 +58,7 @@ export const changePassword = async (
     currentPassword,
     newPassword
   });
-}
+};
 
 export const updateProfileImage = async (profileImageId: number) => {
   return await api.put(`/user/profile-image`, { profileImageId });
