@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ScrollView, Alert, Text, StyleSheet, View, Pressable } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams  } from "expo-router";
 import { ButtonContainer, ImageContainer, ProfileImage, profileImages } from "@/assets/styles/profileImage";
 import { Container, Title } from "@/assets/styles/global.styles";
 import { updateProfileImage } from "@/services/users";
@@ -8,29 +8,35 @@ import { updateProfileImage } from "@/services/users";
 const ProfileImageScreen = () => {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const router = useRouter();
+  const { mode } = useLocalSearchParams();
 
   const handleSelectImage = (id: number) => {
     setSelectedImage(id);
   };
 
-  const handleContinue = async () => {
+  const handleSave = async () => {
     if (selectedImage === null) {
       Alert.alert("Seleção Obrigatória", "Por favor, escolha uma foto de perfil ou pule.");
       return;
     }
     try {
       await updateProfileImage(selectedImage);
-      Alert.alert("Sucesso", "Usuário criado com sucesso!");
-      router.replace("/login");
+      const successMessage = mode === "edit" 
+        ? "Foto atualizada com sucesso!" 
+        : "Usuário criado com sucesso!";
+      Alert.alert("Sucesso", successMessage);
+
+      const nextRoute = mode === "edit" ? "/profile" : "/groups";
+      router.replace(nextRoute);
     } catch (error) {
       console.error(error);
       Alert.alert("Erro", "Não foi possível atualizar a foto de perfil. Tente novamente.");
     }
   };
-  
-  const handleSkip = () => {
-    Alert.alert("Aviso", "Você usará a foto padrão.");
-    router.replace("/login");
+
+  const handleSkipOrBack = () => {
+    const nextRoute = mode === "edit" ? "/profile" : "/groups";
+    router.replace(nextRoute);
   };
 
   const groupedImages = profileImages.reduce((acc, image) => {
@@ -63,11 +69,18 @@ const ProfileImageScreen = () => {
         ))}
       </ScrollView>
       <ButtonContainer>
-        <Pressable style={[styles.button, { backgroundColor: "#6c757d" }]} onPress={handleSkip}>
-          <Text style={styles.buttonText}>Pular</Text>
+        <Pressable 
+          style={[styles.button, { backgroundColor: "#6c757d" }]} 
+          onPress={handleSkipOrBack}
+        >
+          <Text style={styles.buttonText}>
+            {mode === "edit" ? "Voltar" : "Pular"}
+          </Text>
         </Pressable>
-        <Pressable style={styles.button} onPress={handleContinue}>
-          <Text style={styles.buttonText}>Continuar</Text>
+        <Pressable style={styles.button} onPress={handleSave}>
+          <Text style={styles.textSave}>
+            {mode === "edit" ? "Salvar" : "Continuar"}
+          </Text>
         </Pressable>
       </ButtonContainer>
     </Container>
@@ -92,6 +105,12 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 16,
+  },
+  textSave: {
+    color: "#fff",
+    fontSize: 16,
+    width: 80,
+    textAlign: "center",
   },
 });
 

@@ -60,7 +60,7 @@ const RegisterScreen: React.FC = () => {
         setError("Não foi possível criar o usuário.");
       }
     } catch (error) {
-      setError("Ocorreu um erro ao criar o usuário ou realizar o login.");
+      setError("Ocorreu um erro ao criar o usuário.");
       console.error(error);
     }
   };

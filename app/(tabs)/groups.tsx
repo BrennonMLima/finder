@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Pressable, ScrollView } from "react-native";
+import { Pressable, ScrollView, View, Text } from "react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { getUsersInGroup, Group } from "@/services/groups";
-import { getEventsByGroup } from "@/services/events"; // Importando a função para obter eventos
+import { getEventsByGroup } from "@/services/events"; // Importando a fun��o para obter eventos
 import { Container } from "@/assets/styles/global.styles";
 import {
   Header,
@@ -15,7 +15,7 @@ import {
   DateContainer,
   EnterGroupButton,
   ButtonTextEnter,
-  HeaderGroup
+  HeaderGroup,
 } from "@/assets/styles/groups.styles";
 import CreateGroupModal from "../../components/createGroupModal";
 import EnterGroupModal from "@/components/enterGroupModal";
@@ -55,7 +55,7 @@ export default function GroupScreen() {
 
       setGroups(groupsWithDetails);
     } catch (error) {
-      setError("Você ainda não está em um grupo");
+      setError("Voc� ainda n�o est� em um grupo");
     }
   };
 
@@ -79,43 +79,63 @@ export default function GroupScreen() {
   return (
     <Container>
       <Header>
-          <NewGroupButton onPress={() => setModalVisible(true)}>
-            <ButtonText>+ Novo Grupo</ButtonText>
-          </NewGroupButton>
-          <HeaderGroup>
-            <HeaderText>Seus Grupos</HeaderText>
-            <EnterGroupButton onPress={() => setEnterGroupVisible(true)}>
-              <ButtonTextEnter>Entrar em um Grupo</ButtonTextEnter>
-            </EnterGroupButton>
-          </HeaderGroup>
+        <NewGroupButton onPress={() => setModalVisible(true)}>
+          <ButtonText>+ Novo Grupo</ButtonText>
+        </NewGroupButton>
+        <HeaderGroup>
+          <HeaderText>Seus Grupos</HeaderText>
+          <EnterGroupButton onPress={() => setEnterGroupVisible(true)}>
+            <ButtonTextEnter>Entrar em um Grupo</ButtonTextEnter>
+          </EnterGroupButton>
+        </HeaderGroup>
       </Header>
-
-      <ScrollView
-        contentContainerStyle={{ alignItems: "center" }}
-        style={{ width: "100%" }}
-      >
-        {groups.map((group) => (
-          <Pressable
-            key={group.id}
-            onPress={() => handleGroupPress(group.id)}
-            style={{ width: "100%" }}
+  
+      {groups.length === 0 ? (
+        <View style={{ marginTop: 80, gap: 10, alignItems: "center"}}>
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 24,
+              textAlign: "center",
+              fontWeight: "bold",
+            }}
           >
-            <GroupContainer>
-              <GroupTitle>{group.name}</GroupTitle>
-              <GroupDetails>
-                <Texto>{group.userCount} participantes</Texto>
-                <DateContainer>
-                  <Texto>prox.evento:</Texto>
-                  <EventDate>
-                    <Feather name="calendar" size={16} color="#fff" />
-                    <Texto>{formatDate(group.nextEventDate)}</Texto>
-                  </EventDate>
-                </DateContainer>
-              </GroupDetails>
-            </GroupContainer>
-          </Pressable>
-        ))}
-      </ScrollView>
+            Você não faz parte de nenhum grupo ainda!
+          </Text>
+          <Text style={{ color: "#fff", fontSize: 18, textAlign: "center", marginTop: 20, }}>
+            Crie ou entre em um grupo para escolher seus gêneros preferidos. Para votar, arraste para a direita para adicionar ao ranking ou para a
+            esquerda para pular. Os mais votados serão escolhidos para assistir juntos!
+          </Text>
+        </View>
+
+      ) : (
+        <ScrollView
+          contentContainerStyle={{ alignItems: "center" }}
+          style={{ width: "100%" }}
+        >
+          {groups.map((group) => (
+            <Pressable
+              key={group.id}
+              onPress={() => handleGroupPress(group.id)}
+              style={{ width: "100%" }}
+            >
+              <GroupContainer>
+                <GroupTitle>{group.name}</GroupTitle>
+                <GroupDetails>
+                  <Texto>{group.userCount} participantes</Texto>
+                  <DateContainer>
+                    <Texto>prox.evento:</Texto>
+                    <EventDate>
+                      <Feather name="calendar" size={16} color="#fff" />
+                      <Texto>{formatDate(group.nextEventDate)}</Texto>
+                    </EventDate>
+                  </DateContainer>
+                </GroupDetails>
+              </GroupContainer>
+            </Pressable>
+          ))}
+        </ScrollView>
+      )}
 
       <CreateGroupModal
         visible={modalVisible}
@@ -127,7 +147,7 @@ export default function GroupScreen() {
         visible={enterGroupVisible}
         onClose={() => setEnterGroupVisible(false)}
         onEnterGroup={fetchGroupsAndUsers}
-        />
+      />
     </Container>
   );
 }

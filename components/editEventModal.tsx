@@ -78,13 +78,13 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
   
   const handleEdit = () => {
     if (!name || !location || !date || !description) {
-      Alert.alert("Erro", "Todos os campos são obrigatórios!");
+      Alert.alert("Erro", "Todos os campos s?o obrigat?rios!");
       return;
     }
     
     const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
     if (!dateRegex.test(date)) {
-      Alert.alert("Erro", "Data inválida! Use o formato DD/MM/AAAA.");
+      Alert.alert("Erro", "Data inv?lida! Use o formato DD/MM/AAAA.");
       return;
     }
     const isoDate = formatToISO(date);
@@ -100,7 +100,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
 
           <StyledInput placeholder="Nome" value={name} onChangeText={setName} />
           <StyledInput
-            placeholder="Localização"
+            placeholder="Localiza??o"
             value={location}
             onChangeText={setLocation}
           />
@@ -111,7 +111,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({
             keyboardType="numeric"
           />
           <StyledInput
-            placeholder="Descrição"
+            placeholder="Descri??o"
             value={description}
             onChangeText={setDescription}
           />

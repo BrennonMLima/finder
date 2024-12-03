@@ -96,7 +96,8 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
 
   const handleEditImage = () => {
     router.push({
-      pathname: "/profileimage"
+      pathname: "/profileimage",
+      params: { mode: "edit" },
     });
     onClose();
   }
@@ -164,7 +165,11 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
       <Overlay onPress={handleCancel}>
         <EditModalWrapper onPress={() => {}}>
           <Title>Editar Perfil</Title>
-          <EditProfile>
+
+
+        {!showInputs ? (
+          <>
+                    <EditProfile>
             <Pressable>
                 <ImageContainer>
                   {profileImage ? (
@@ -189,9 +194,6 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
             /> 
           )}
         </EditProfile>
-
-        {!showInputs ? (
-          <>
             <ButtonPassword onPress={handlePasswordChange}>
               <ButtonTextPassword>Alterar Senha</ButtonTextPassword>
             </ButtonPassword>

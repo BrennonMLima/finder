@@ -58,7 +58,7 @@ export const SettingsIcon = styled.Pressable`
 
 export const MenuContainer = styled.View`
   position: absolute;
-  top: 55px;
+  top: 85px;
   right: 10px;
   background-color: #333;
   padding: 10px;

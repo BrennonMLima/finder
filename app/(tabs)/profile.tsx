@@ -126,7 +126,6 @@ export default function ProfileScreen() {
         <Links onPress={navigateToRateFilms}>Avaliar Filmes</Links>
       </Content>
 
-      {/* Modal de confirmação de logout usando o componente reutilizável */}
       <ConfirmationModal
         visible={logoutConfirmVisible}
         onConfirm={handleLogout}

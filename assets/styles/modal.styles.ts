@@ -65,8 +65,9 @@ export const DataList = styled.FlatList`
 `
 
 export const EditProfile = styled.View`
-  flex-direction: row;
+  flex-direction: column;
   gap: 20px;
+  width: 80%;
   align-items: center;
   margin-bottom: 30px;
 `
@@ -128,11 +129,12 @@ export const StyledInputContainer = styled.View`
 `;
 
 export const ButtonPassword = styled.Pressable`
-  background-color: #007bff;
+  background-color: transparent;
+  border: 1px #007bff solid;
   padding: 10px 5px;
   border-radius: 8px;
   display: flex;
-  align-self: flex-start;
+  align-self: flex-end;
   width: 40%;
   margin-bottom: 13px;
 `;
