@@ -116,7 +116,7 @@ export default function ProfileScreen() {
         {profileImage ? (
           <ProfileImage source={profileImage} />
         ) : (
-          <ProfileImage source={require("@/assets/images/profile/profile1.jpg")} />
+          <ProfileImage source={require("@/assets/images/profile/0.jpeg")} />
         )}
         {user ? (
           <Nickname>{user.name}</Nickname>

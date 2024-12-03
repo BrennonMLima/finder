@@ -40,6 +40,9 @@ const ProfileImageScreen = () => {
   };
 
   const groupedImages = profileImages.reduce((acc, image) => {
+    if (image.id === 0) {
+      return acc;
+    }
     if (!acc[image.genre]) {
       acc[image.genre] = [];
     }
