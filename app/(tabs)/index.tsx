@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
+import { MaterialCommunityIcons, FontAwesome, AntDesign, Ionicons, Octicons } from "@expo/vector-icons";
 import { Container } from "@/assets/styles/global.styles";
 import { Picker } from "@react-native-picker/picker";
 import {
-  GestureResponderEvent,
   PanResponder,
   View,
   Text,
@@ -41,11 +40,9 @@ export default function HomeScreen() {
   const [movies, setMovies] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visitedPages, setVisitedPages] = useState<number[]>([]);
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState("all");
   const [userGroups, setUserGroups] = useState<Group[]>([]);
-  const [loadingGroups, setLoadingGroups] = useState(true);
   const position = React.useRef(new Animated.ValueXY()).current;
   const [helpModalVisible, setHelpModalVisible] = useState(false);
   const [isLoadingMovies, setIsLoadingMovies] = useState(true);
@@ -117,7 +114,7 @@ const fetchMovies = async (genreIds = "") => {
   const maxPages = 100;
   let newPage;
 
-  // Gera uma página aleatória que ainda não foi visitada
+
   do {
     newPage = Math.floor(Math.random() * maxPages) + 1;
   } while (visitedPages.includes(newPage));
@@ -137,16 +134,16 @@ const fetchMovies = async (genreIds = "") => {
 
     const data = await response.json();
 
-    // Filtra os filmes com overview vazio
+    
     const validMovies = data.results.filter((movie: { overview: string; }) => movie.overview && movie.overview.trim() !== "");
 
 
-    setMovies(validMovies); // Atualiza o estado apenas com filmes válidos
+    setMovies(validMovies);
   } catch (error) {
     console.error("Erro ao buscar filmes:", error);
-    setMovies([]); // Reseta os filmes em caso de erro
+    setMovies([]);
   } finally {
-    setIsLoadingMovies(false); // Marca como não carregando
+    setIsLoadingMovies(false);
   }
 };
 
@@ -221,6 +218,26 @@ const handleSwipe = async (direction: string) => {
   }
 };
 
+const interestOpacity = position.x.interpolate({
+  inputRange: [0,10, 100],
+  outputRange: [0,0.5, 1],
+  extrapolate: "clamp",
+});
+
+const disinterestOpacity = position.x.interpolate({
+  inputRange: [-100, 0],
+  outputRange: [1, 0],
+  extrapolate: "clamp",
+});
+
+const iconScale = position.x.interpolate({
+  inputRange: [-300, -150, 0, 150, 300],
+  outputRange: [3.5, 2.5, 1.5, 2.5, 3.5], 
+  extrapolate: "clamp",
+});
+
+
+
   const panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => true,
     onPanResponderMove: (_, gestureState) => {
@@ -278,10 +295,11 @@ const handleSwipe = async (direction: string) => {
   const posterUrl = `https://image.tmdb.org/t/p/w500${currentMovie.poster_path}`;
 
   const rotate = position.x.interpolate({
-    inputRange: [-150, 0, 150],
-    outputRange: ["-5deg", "0deg", "5deg"],
+    inputRange: [-300, -150, 0, 150, 300],
+    outputRange: ["-10deg", "-5deg", "0deg", "5deg", "10deg"],
     extrapolate: "clamp",
   });
+  
 
   return (
     <Container>
@@ -332,6 +350,58 @@ const handleSwipe = async (direction: string) => {
           justifyContent: "center",
         }}
       >
+
+      
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: "30%",// para colocar ao lado top: "40%"
+          right: "40%",// para colocar ao lado  right: -50, e tirar o texto
+          zIndex: 100,
+          alignItems: "center",
+          transform: [{ scale: iconScale }, { rotate }],
+          opacity: disinterestOpacity,
+        }}
+      >
+        <FontAwesome name="close"  size={50} color="#ff3333" />
+        <Animated.Text
+          style={{
+            fontSize: 16,
+            color: "#ff3333",
+            marginTop: 8,
+            textAlign: "center",
+            opacity: disinterestOpacity,
+          }}
+        >
+          Desinteressado
+        </Animated.Text>
+      </Animated.View>
+
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: "30%",// para colocar ao lado top: "40%"
+          left: "40%",// para colocar ao lado  left: -50, e tirar o texto
+          zIndex: 100,
+          alignItems: "center",
+          transform: [{ scale: iconScale }, { rotate }],
+          opacity: interestOpacity,
+        }}
+      >
+        <FontAwesome name="heart" size={50} color="#0496ff"/>
+        <Animated.Text
+          style={{
+            fontSize: 16,
+            color: "#0496ff",
+            marginTop: 8,
+            textAlign: "center",
+            opacity: interestOpacity,
+          }}
+        >
+          Interessado
+        </Animated.Text>
+      </Animated.View>
+
         <MovieCard>
           <ImageRating>
             <Banner source={{ uri: posterUrl }} resizeMode="stretch" />
