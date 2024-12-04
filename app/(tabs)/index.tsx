@@ -354,6 +354,8 @@ const iconScale = position.x.interpolate({
       
       <Animated.View
         style={{
+          borderRadius: 10,
+          padding: 20,
           position: "absolute",
           top: "30%",// para colocar ao lado top: "40%"
           right: "40%",// para colocar ao lado  right: -50, e tirar o texto
@@ -379,6 +381,8 @@ const iconScale = position.x.interpolate({
 
       <Animated.View
         style={{
+          borderRadius: 10,
+          padding: 30,
           position: "absolute",
           top: "30%",// para colocar ao lado top: "40%"
           left: "40%",// para colocar ao lado  left: -50, e tirar o texto

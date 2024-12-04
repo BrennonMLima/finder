@@ -105,13 +105,18 @@ const editProfileModal: React.FC<EditProfileModalProps> = ({
   const handleChangePassword = async () => {
     if(!comparePassword()) return;
     try{
-      await changePassword(currentPassword, confirmPassword);
-      Alert.alert("Sucesso", "Senha alterada com sucesso");
-      console.log("Senha alterada com sucesso")
-      handleCancel()
-    }catch(error){
-      Alert.alert("Erro", "Erro ao alterar a senha");
-      console.error(error);
+        await changePassword(currentPassword, confirmPassword);
+        Alert.alert("Sucesso", "Senha alterada com sucesso");
+        console.log("Senha alterada com sucesso")
+        handleCancel()
+    }catch(error: any){
+      if (error.response?.status === 400 && error.response?.data?.message === "Senha atual incorreta") {
+        Alert.alert("Erro", "Senha atual incorreta");
+        console.error("Senha atual incorreta");
+      } else {
+        Alert.alert("Erro", "Erro ao alterar a senha");
+        console.error(error);
+      }
     }
   }
 
